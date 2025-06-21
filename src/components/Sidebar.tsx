@@ -23,6 +23,7 @@ const Sidebar = () => {
     { path: '/host/audio', icon: Mic, label: 'Audio Capture' },
     { path: '/host/ai-questions', icon: Brain, label: 'AI Questions' },
     { path: '/host/create-manual-poll', icon: PlusSquare, label: 'Create Manual Poll' }, // ✅ NEW ENTRY
+    { path: '/host/create-poll', icon: FileText, label: 'Create Poll Session' },
     { path: '/host/participants', icon: Users, label: 'Participants' },
     { path: '/host/leaderboard', icon: Trophy, label: 'Leaderboard' },
     { path: '/host/reports', icon: FileText, label: 'Reports' },
