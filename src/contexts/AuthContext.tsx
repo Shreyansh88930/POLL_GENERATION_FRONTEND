@@ -47,9 +47,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('user', JSON.stringify(mockUser));
   };
 
-  const register = async (fullName: string, email: string, password: string, role: 'host' | 'student') => {
+  const register = async (fullName: string, email: string, password: string, role: string) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Use centralized password validation
+    validatePassword(password);
     
     const mockUser = {
       id: '1',
@@ -87,10 +90,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
+};
+
+export function validatePassword(password: string) {
+  if (password.length < 6) throw new Error('Password must be at least 6 characters');
+  if (!/[a-zA-Z]/.test(password)) throw new Error('Password must contain at least one letter');
+  if (!/\d/.test(password)) throw new Error('Password must contain at least one number');
 }

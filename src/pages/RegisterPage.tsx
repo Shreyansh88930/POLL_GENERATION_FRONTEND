@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Mail, Lock, Eye, EyeOff, Brain, Loader, User } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth, validatePassword } from '../contexts/AuthContext';
 import GlassCard from '../components/GlassCard';
 
 interface RegisterForm {
@@ -18,19 +18,37 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [registerError, setRegisterError] = useState<string | null>(null);
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterForm>();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterForm>({
+    mode: 'onChange', // enables real-time validation
+  });
 
-  const password = watch('password');
+  const password = watch('password') || "";
+
+  // Password strength checker
+  function getPasswordStrength(pw: string) {
+    let score = 0;
+    if (pw.length >= 6) score++;
+    if (/[a-zA-Z]/.test(pw)) score++;
+    if (/\d/.test(pw)) score++;
+    if (/[^a-zA-Z0-9]/.test(pw)) score++;
+    if (score <= 1) return 'Weak';
+    if (score === 2) return 'Medium';
+    return 'Strong';
+  }
+
   const selectedRole = watch('role');
 
   const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true);
+    setRegisterError(null);
     try {
       await registerUser(data.fullName, data.email, data.password, data.role);
       navigate(data.role === 'host' ? '/host' : '/student');
-    } catch (error) {
+    } catch (error: any) {
+      setRegisterError(error.message || 'Registration failed');
       console.error('Registration failed:', error);
     } finally {
       setIsLoading(false);
@@ -66,6 +84,9 @@ const RegisterPage = () => {
             <p className="text-gray-400 text-sm sm:text-base">Join our AI-powered polling system</p>
           </motion.div>
 
+          {registerError && (
+            <div className="mb-4 text-red-400 text-center text-sm">{registerError}</div>
+          )}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Full Name */}
             <div>
@@ -159,9 +180,13 @@ const RegisterPage = () => {
                   type={showPassword ? 'text' : 'password'}
                   {...register('password', { 
                     required: 'Password is required',
-                    minLength: {
-                      value: 6,
-                      message: 'Password must be at least 6 characters'
+                    validate: (value) => {
+                      try {
+                        validatePassword(value);
+                        return true;
+                      } catch (e: any) {
+                        return e.message;
+                      }
                     }
                   })}
                   className="w-full pl-9 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-3 bg-white/5 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm sm:text-base"
@@ -175,6 +200,16 @@ const RegisterPage = () => {
                   {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </button>
               </div>
+              {/* Password strength indicator */}
+              {password && (
+                <p className={`mt-1 text-xs ${
+                  getPasswordStrength(password) === 'Strong' ? 'text-green-400' :
+                  getPasswordStrength(password) === 'Medium' ? 'text-yellow-400' :
+                  'text-red-400'
+                }`}>
+                  Strength: {getPasswordStrength(password)}
+                </p>
+              )}
               {errors.password && (
                 <p className="mt-1 text-sm text-red-400">{errors.password.message}</p>
               )}
