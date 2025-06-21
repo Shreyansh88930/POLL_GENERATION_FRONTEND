@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Link, Upload, Users, Mail, FileText, Check, AlertCircle, X, Eye, EyeOff } from "lucide-react"
 import GlassCard from "../components/GlassCard"
 import DashboardLayout from "../components/DashboardLayout"
+import * as XLSX from "xlsx"
 
 interface StudentInvite {
   name: string
@@ -39,7 +40,7 @@ const CreatePollPage: React.FC = () => {
     }
   }
 
-  // Parse CSV content (dummy implementation)
+  // Parse CSV content
   const parseCSV = (content: string): StudentInvite[] => {
     const lines = content.split("\n").filter((line) => line.trim())
     const headers = lines[0]
@@ -66,10 +67,13 @@ const CreatePollPage: React.FC = () => {
       .filter((student) => student.email)
   }
 
-  // Handle file upload
+  // Handle file upload (CSV or Excel)
   const handleFileUpload = useCallback(async (file: File) => {
-    if (!file.name.endsWith(".csv")) {
-      setErrors((prev) => ({ ...prev, csv: "Please upload a CSV file" }))
+    const isCSV = file.name.endsWith(".csv")
+    const isXLS = file.name.endsWith(".xls") || file.name.endsWith(".xlsx")
+
+    if (!isCSV && !isXLS) {
+      setErrors((prev) => ({ ...prev, csv: "Please upload a .csv or .xls/.xlsx file" }))
       return
     }
 
@@ -77,8 +81,33 @@ const CreatePollPage: React.FC = () => {
     setErrors((prev) => ({ ...prev, csv: undefined }))
 
     try {
-      const content = await file.text()
-      const parsedStudents = parseCSV(content)
+      let parsedStudents: StudentInvite[] = []
+
+      if (isCSV) {
+        const content = await file.text()
+        parsedStudents = parseCSV(content)
+      } else if (isXLS) {
+        const data = await file.arrayBuffer()
+        const workbook = XLSX.read(data, { type: "array" })
+        const sheet = workbook.Sheets[workbook.SheetNames[0]]
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as string[][]
+
+        const headers = rows[0].map((h) => h.toLowerCase().trim())
+        const emailIndex = headers.findIndex((h) => h.includes("email"))
+        const nameIndex = headers.findIndex((h) => h.includes("name"))
+
+        if (emailIndex === -1) {
+          throw new Error("File must contain an 'email' column")
+        }
+
+        parsedStudents = rows
+          .slice(1)
+          .filter((row) => row[emailIndex])
+          .map((row) => ({
+            name: nameIndex !== -1 ? row[nameIndex]?.toString().trim() || "Unknown" : "Unknown",
+            email: row[emailIndex]?.toString().trim() || "",
+          }))
+      }
 
       if (parsedStudents.length === 0) {
         throw new Error("No valid student records found")
@@ -90,7 +119,7 @@ const CreatePollPage: React.FC = () => {
     } catch (error) {
       setErrors((prev) => ({
         ...prev,
-        csv: error instanceof Error ? error.message : "Failed to parse CSV file",
+        csv: error instanceof Error ? error.message : "Failed to parse the file",
       }))
       setStudents([])
       setCsvFile(null)
@@ -120,7 +149,7 @@ const CreatePollPage: React.FC = () => {
         handleFileUpload(files[0])
       }
     },
-    [handleFileUpload],
+    [handleFileUpload]
   )
 
   // Handle file input change
@@ -146,14 +175,13 @@ const CreatePollPage: React.FC = () => {
   const handleSubmit = () => {
     if (!isFormValid) return
 
-    // Simulate API call
     setIsLoading(true)
     setTimeout(() => {
       setIsLoading(false)
-      // Show success message or redirect
       console.log("Poll created with:", { meetingLink, students })
     }, 2000)
   }
+
 
   return (
     <DashboardLayout>
@@ -261,7 +289,7 @@ const CreatePollPage: React.FC = () => {
                 >
                   <input
                     type="file"
-                    accept=".csv"
+                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                     onChange={handleFileInputChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
@@ -273,7 +301,7 @@ const CreatePollPage: React.FC = () => {
 
                     <div>
                       <p className="text-white font-medium">
-                        {isDragOver ? "Drop your CSV file here" : "Drag & drop your CSV file"}
+                        {isDragOver ? "Drop your CSV file here" : "Drag & drop your CSV or Excel file"}
                       </p>
                       <p className="text-gray-400 text-sm mt-1">or click to browse files</p>
                     </div>
@@ -321,7 +349,7 @@ const CreatePollPage: React.FC = () => {
                 {/* CSV Format Info */}
                 <div className="flex items-center space-x-2 text-gray-400 text-sm">
                   <FileText className="w-4 h-4" />
-                  <span>CSV must contain 'email' column (optional: 'name' column)</span>
+                  <span>CSV must contain 'email' column (optional: 'name' column and 'S No.' column)</span>
                 </div>
               </div>
             </GlassCard>
