@@ -223,14 +223,12 @@ const AIQuestionFeed = () => {
                 <label className="text-sm font-medium text-gray-300">Enable Auto-Launch</label>
                 <button
                   onClick={() => setAutoLaunch(!autoLaunch)}
-                  className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${
-                    autoLaunch ? "bg-primary-500" : "bg-gray-600"
-                  }`}
+                  className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${autoLaunch ? "bg-primary-500" : "bg-gray-600"
+                    }`}
                 >
                   <span
-                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${
-                      autoLaunch ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${autoLaunch ? "translate-x-6" : "translate-x-1"
+                      }`}
                   />
                 </button>
               </div>
@@ -239,18 +237,16 @@ const AIQuestionFeed = () => {
                 <label className="text-sm font-medium text-gray-300">Timer Enabled</label>
                 <button
                   onClick={() => setTimerEnabled(!timerEnabled)}
-                  className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${
-                    timerEnabled ? "bg-primary-500" : "bg-gray-600"
-                  }`}
+                  className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${timerEnabled ? "bg-primary-500" : "bg-gray-600"
+                    }`}
                 >
                   <span
-                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${
-                      timerEnabled ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${timerEnabled ? "translate-x-6" : "translate-x-1"
+                      }`}
                   />
                 </button>
               </div>
-
+{timerEnabled && (
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Default Timer: {defaultTimer}s</label>
                 <input
@@ -261,6 +257,15 @@ const AIQuestionFeed = () => {
                   onChange={(e) => setDefaultTimer(Number.parseInt(e.target.value))}
                   className="w-full"
                 />
+              </div>
+              )}
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-gray-300">Stop Auto-Generated Questions</label>
+                <button
+                  className="px-4 py-1.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all duration-200"
+                >
+                  STOP
+                </button>
               </div>
             </div>
           </GlassCard>
@@ -336,11 +341,10 @@ const AIQuestionFeed = () => {
                         {question.options.map((option, optionIndex) => (
                           <div
                             key={optionIndex}
-                            className={`p-2 rounded-lg text-sm ${
-                              optionIndex === question.correct
+                            className={`p-2 rounded-lg text-sm ${optionIndex === question.correct
                                 ? "bg-green-500/20 text-green-400 border border-green-500/30"
                                 : "bg-white/5 text-gray-300 border border-gray-600"
-                            }`}
+                              }`}
                           >
                             {option}
                           </div>
