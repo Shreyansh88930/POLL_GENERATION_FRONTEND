@@ -64,6 +64,7 @@ const AIControlPanel: React.FC<AIControlPanelProps> = ({ isOpen, onToggle, showF
 
   return (
     <>
+    
       {/* Control Panel Toggle Button - Only show when showFloatingButton is true */}
       {showFloatingButton && (
         <motion.button
@@ -116,6 +117,35 @@ const AIControlPanel: React.FC<AIControlPanelProps> = ({ isOpen, onToggle, showF
 
           {/* Configuration Sections */}
           <div className="space-y-6">
+            {/* Configuration Summary */}
+          <GlassCard className="p-4 bg-primary-500/5 border-primary-500/20">
+            <h3 className="text-sm font-medium text-primary-400 mb-3">Current Configuration</h3>
+            <div className="space-y-2 text-xs text-gray-300">
+              <div className="flex justify-between">
+                <span>Source:</span>
+                <span className="text-primary-400 capitalize">{config.source}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Frequency:</span>
+                <span>Every {config.frequency} min</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Quantity:</span>
+                <span>{config.quantity} questions</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Types:</span>
+                <span>{config.types.length} selected</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Context:</span>
+                <span className="capitalize">
+                  {config.contextRange === "custom" ? config.customRange : config.contextRange.replace("last", "Last ")}
+                </span>
+              </div>
+            </div>
+          </GlassCard>
+          
             {/* Source Toggle */}
             <GlassCard className="p-4">
               <SourceToggle source={config.source} onToggle={(source) => updateConfig({ source })} />
@@ -180,34 +210,7 @@ const AIControlPanel: React.FC<AIControlPanelProps> = ({ isOpen, onToggle, showF
             </motion.button>
           </div>
 
-          {/* Configuration Summary */}
-          <GlassCard className="p-4 bg-primary-500/5 border-primary-500/20">
-            <h3 className="text-sm font-medium text-primary-400 mb-3">Current Configuration</h3>
-            <div className="space-y-2 text-xs text-gray-300">
-              <div className="flex justify-between">
-                <span>Source:</span>
-                <span className="text-primary-400 capitalize">{config.source}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Frequency:</span>
-                <span>Every {config.frequency} min</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Quantity:</span>
-                <span>{config.quantity} questions</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Types:</span>
-                <span>{config.types.length} selected</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Context:</span>
-                <span className="capitalize">
-                  {config.contextRange === "custom" ? config.customRange : config.contextRange.replace("last", "Last ")}
-                </span>
-              </div>
-            </div>
-          </GlassCard>
+          
         </div>
       </motion.div>
     </>
