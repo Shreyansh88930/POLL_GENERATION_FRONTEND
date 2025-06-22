@@ -9,6 +9,7 @@ interface StudentSidebarProps {
   onSectionChange: (section: string) => void
   isOpen: boolean
   onClose: () => void
+  
 }
 
 const StudentSidebar: React.FC<StudentSidebarProps> = ({ activeSection, onSectionChange, isOpen, onClose }) => {

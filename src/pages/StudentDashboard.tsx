@@ -13,6 +13,8 @@ import PollHistoryPage from "../components/student/PollHistoryPage"
 import PollQuestionsPage from "../components/student/PollQuestionsPage"
 import StudentProfilePage from "../components/student/StudentProfilePage"
 import AchievementPage from "../components/student/AchievementPage"
+import NotificationPage from "../components/student/NotificationPage"
+import Settings from "../components/student/Settings"
 
 const StudentDashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard")
@@ -103,30 +105,14 @@ const StudentDashboard = () => {
         )
       case "notifications":
         return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
-          >
-            <h1 className="text-3xl font-bold text-white">Notifications</h1>
-            <GlassCard className="p-6">
-              <p className="text-gray-400">Your notifications will appear here.</p>
-            </GlassCard>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <NotificationPage />
           </motion.div>
         )
       case "settings":
         return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
-          >
-            <h1 className="text-3xl font-bold text-white">Settings</h1>
-            <GlassCard className="p-6">
-              <p className="text-gray-400">Settings and preferences will appear here.</p>
-            </GlassCard>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <Settings />
           </motion.div>
         )
       default:
