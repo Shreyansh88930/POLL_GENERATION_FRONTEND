@@ -96,23 +96,23 @@ const HostDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="space-y-6"
+          className="space-y-4 sm:space-y-6"
         >
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Classic Dashboard</h1>
-              <p className="text-gray-400">Welcome back! Here's your polling system overview.</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Classic Dashboard</h1>
+              <p className="text-gray-400 text-sm sm:text-base">Welcome back! Here's your polling system overview.</p>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium">
+              <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                 System Active
               </div>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {statsCards.map((card, index) => (
               <motion.div
                 key={card.title}
@@ -120,44 +120,45 @@ const HostDashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index }}
               >
-                <GlassCard className="p-6">
+                <GlassCard className="p-4 sm:p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 bg-gradient-to-r ${card.color} rounded-lg flex items-center justify-center`}>
-                      <card.icon className="w-6 h-6 text-white" />
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${card.color} rounded-lg flex items-center justify-center`}>
+                      <card.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-white">{card.value}</div>
-                      <div className="text-sm text-green-400">{card.change}</div>
+                      <div className="text-xl sm:text-2xl font-bold text-white">{card.value}</div>
+                      <div className="text-xs sm:text-sm text-green-400">{card.change}</div>
                     </div>
                   </div>
-                  <h3 className="text-gray-300 font-medium">{card.title}</h3>
+                  <h3 className="text-gray-300 font-medium text-sm sm:text-base">{card.title}</h3>
                 </GlassCard>
               </motion.div>
             ))}
           </div>
 
           {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
             {/* Participation Trends */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <GlassCard className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4">Participation Trends</h3>
-                <div className="h-64">
+              <GlassCard className="p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4">Participation Trends</h3>
+                <div className="h-48 sm:h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={participationData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                      <XAxis dataKey="name" stroke="#9CA3AF" />
-                      <YAxis stroke="#9CA3AF" />
+                      <XAxis dataKey="name" stroke="#9CA3AF" fontSize={12} />
+                      <YAxis stroke="#9CA3AF" fontSize={12} />
                       <Tooltip 
                         contentStyle={{ 
                           backgroundColor: 'rgba(17, 24, 39, 0.8)', 
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '8px',
-                          color: '#fff'
+                          color: '#fff',
+                          fontSize: '12px'
                         }} 
                       />
                       <Line 
@@ -179,20 +180,21 @@ const HostDashboard = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <GlassCard className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4">Confusion Analysis</h3>
-                <div className="h-64">
+              <GlassCard className="p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4">Confusion Analysis</h3>
+                <div className="h-48 sm:h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={confusionData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                      <XAxis dataKey="topic" stroke="#9CA3AF" />
-                      <YAxis stroke="#9CA3AF" />
+                      <XAxis dataKey="topic" stroke="#9CA3AF" fontSize={10} angle={-45} textAnchor="end" height={60} />
+                      <YAxis stroke="#9CA3AF" fontSize={12} />
                       <Tooltip 
                         contentStyle={{ 
                           backgroundColor: 'rgba(17, 24, 39, 0.8)', 
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '8px',
-                          color: '#fff'
+                          color: '#fff',
+                          fontSize: '12px'
                         }} 
                       />
                       <Bar dataKey="confusion" fill="#3B82F6" radius={[4, 4, 0, 0]} />
@@ -209,22 +211,22 @@ const HostDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <GlassCard className="p-6">
-              <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <GlassCard className="p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Quick Actions</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
                 {quickActions.map((action, index) => (
                   <motion.a
                     key={action.title}
                     href={action.href}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="block p-4 bg-white/5 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200"
+                    className="block p-3 sm:p-4 bg-white/5 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200"
                   >
-                    <div className={`w-10 h-10 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center mb-3`}>
-                      <action.icon className="w-5 h-5 text-white" />
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center mb-3`}>
+                      <action.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
-                    <h4 className="font-medium text-white mb-1">{action.title}</h4>
-                    <p className="text-sm text-gray-400">{action.description}</p>
+                    <h4 className="font-medium text-white mb-1 text-sm sm:text-base">{action.title}</h4>
+                    <p className="text-xs sm:text-sm text-gray-400">{action.description}</p>
                   </motion.a>
                 ))}
               </div>
@@ -237,9 +239,9 @@ const HostDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
           >
-            <GlassCard className="p-6">
-              <h3 className="text-xl font-bold text-white mb-4">Recent Activity</h3>
-              <div className="space-y-4">
+            <GlassCard className="p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-4">Recent Activity</h3>
+              <div className="space-y-3 sm:space-y-4">
                 {[
                   { action: 'New poll created', time: '2 minutes ago', user: 'AI System' },
                   { action: 'Student joined session', time: '5 minutes ago', user: 'John Doe' },
@@ -247,12 +249,12 @@ const HostDashboard = () => {
                   { action: 'Question approved', time: '18 minutes ago', user: 'Host' },
                   { action: 'Report generated', time: '25 minutes ago', user: 'System' },
                 ].map((activity, index) => (
-                  <div key={index} className="flex items-center justify-between py-2">
+                  <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 space-y-1 sm:space-y-0">
                     <div>
-                      <p className="text-white font-medium">{activity.action}</p>
-                      <p className="text-sm text-gray-400">{activity.user}</p>
+                      <p className="text-white font-medium text-sm sm:text-base">{activity.action}</p>
+                      <p className="text-xs sm:text-sm text-gray-400">{activity.user}</p>
                     </div>
-                    <div className="text-sm text-gray-400">{activity.time}</div>
+                    <div className="text-xs sm:text-sm text-gray-400">{activity.time}</div>
                   </div>
                 ))}
               </div>

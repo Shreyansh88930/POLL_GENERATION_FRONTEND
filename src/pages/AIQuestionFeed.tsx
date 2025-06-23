@@ -133,23 +133,23 @@ const AIQuestionFeed = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-6"
+        className="space-y-4 sm:space-y-6"
       >
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">AI Question Feed</h1>
-            <p className="text-gray-400">Review and manage AI-generated questions</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">AI Question Feed</h1>
+            <p className="text-gray-400 text-sm sm:text-base">Review and manage AI-generated questions</p>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="bg-primary-500/20 text-primary-400 px-3 py-1 rounded-full text-sm font-medium">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <div className="bg-primary-500/20 text-primary-400 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
               {filteredQuestions.filter((q) => q.status === "pending").length} Pending
             </div>
             {/* Only show AI Config button when not scrolled */}
             {!isScrolled && (
               <motion.button
                 onClick={() => setIsControlPanelOpen(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary-500/20 text-primary-400 rounded-lg border border-primary-500/30 hover:bg-primary-500/30 transition-colors duration-200"
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-primary-500/20 text-primary-400 rounded-lg border border-primary-500/30 hover:bg-primary-500/30 transition-colors duration-200 text-sm sm:text-base"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 initial={{ opacity: 0, x: 20 }}
@@ -164,9 +164,9 @@ const AIQuestionFeed = () => {
         </div>
 
         {/* Controls */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Filter Settings */}
-          <GlassCard className="p-6">
+          <GlassCard className="p-4 sm:p-6">
             <h3 className="text-lg font-bold text-white mb-4 flex items-center">
               <Filter className="w-5 h-5 mr-2" />
               Filter Settings
@@ -177,7 +177,7 @@ const AIQuestionFeed = () => {
                 <select
                   value={filterSettings.difficulty}
                   onChange={(e) => setFilterSettings((prev) => ({ ...prev, difficulty: e.target.value }))}
-                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
                 >
                   <option value="all" className="bg-gray-800">
                     All Levels
@@ -213,7 +213,7 @@ const AIQuestionFeed = () => {
           </GlassCard>
 
           {/* Auto-Launch Settings */}
-          <GlassCard className="p-6">
+          <GlassCard className="p-4 sm:p-6">
             <h3 className="text-lg font-bold text-white mb-4 flex items-center">
               <Settings className="w-5 h-5 mr-2" />
               Auto-Launch Settings
@@ -266,27 +266,27 @@ const AIQuestionFeed = () => {
           </GlassCard>
 
           {/* Quick Stats */}
-          <GlassCard className="p-6">
+          <GlassCard className="p-4 sm:p-6">
             <h3 className="text-lg font-bold text-white mb-4">Quick Stats</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-gray-300">Total Questions</span>
+                <span className="text-gray-300 text-sm">Total Questions</span>
                 <span className="text-white font-medium">{questions.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-300">Approved</span>
+                <span className="text-gray-300 text-sm">Approved</span>
                 <span className="text-green-400 font-medium">
                   {questions.filter((q) => q.status === "approved").length}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-300">Pending</span>
+                <span className="text-gray-300 text-sm">Pending</span>
                 <span className="text-yellow-400 font-medium">
                   {questions.filter((q) => q.status === "pending").length}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-300">Avg Confidence</span>
+                <span className="text-gray-300 text-sm">Avg Confidence</span>
                 <span className="text-white font-medium">
                   {Math.round(questions.reduce((acc, q) => acc + q.confidence, 0) / questions.length)}%
                 </span>
@@ -296,8 +296,8 @@ const AIQuestionFeed = () => {
         </div>
 
         {/* Question Queue */}
-        <GlassCard className="p-6">
-          <h3 className="text-xl font-bold text-white mb-6">Question Queue</h3>
+        <GlassCard className="p-4 sm:p-6">
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Question Queue</h3>
           <div className="space-y-4">
             <AnimatePresence>
               {filteredQuestions.map((question, index) => (
@@ -307,11 +307,11 @@ const AIQuestionFeed = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white/5 rounded-lg border border-white/10 p-6 hover:border-white/20 transition-colors duration-200"
+                  className="bg-white/5 rounded-lg border border-white/10 p-4 sm:p-6 hover:border-white/20 transition-colors duration-200"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+                    <div className="flex-1 lg:mr-4">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(question.difficulty)}`}
                         >
@@ -323,20 +323,20 @@ const AIQuestionFeed = () => {
                           {question.status}
                         </span>
                         <div className="flex items-center space-x-1 text-gray-400">
-                          <Brain className="w-4 h-4" />
+                          <Brain className="w-3 h-3 sm:w-4 sm:h-4" />
                           <span className="text-xs">{question.confidence}% confidence</span>
                         </div>
                         <div className="flex items-center space-x-1 text-gray-400">
-                          <Clock className="w-4 h-4" />
+                          <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                           <span className="text-xs">{question.timeEstimate}</span>
                         </div>
                       </div>
-                      <h4 className="text-lg font-medium text-white mb-3">{question.question}</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+                      <h4 className="text-base sm:text-lg font-medium text-white mb-3">{question.question}</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
                         {question.options.map((option, optionIndex) => (
                           <div
                             key={optionIndex}
-                            className={`p-2 rounded-lg text-sm ${
+                            className={`p-2 rounded-lg text-xs sm:text-sm ${
                               optionIndex === question.correct
                                 ? "bg-green-500/20 text-green-400 border border-green-500/30"
                                 : "bg-white/5 text-gray-300 border border-gray-600"
@@ -346,7 +346,7 @@ const AIQuestionFeed = () => {
                           </div>
                         ))}
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         {question.tags.map((tag, tagIndex) => (
                           <span
                             key={tagIndex}
@@ -357,7 +357,7 @@ const AIQuestionFeed = () => {
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 ml-4">
+                    <div className="flex flex-row lg:flex-col items-center lg:items-end space-x-2 lg:space-x-0 lg:space-y-2">
                       {question.status === "pending" && (
                         <>
                           <motion.button

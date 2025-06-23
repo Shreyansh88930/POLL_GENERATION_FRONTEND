@@ -125,12 +125,12 @@ const StudentDashboard = () => {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-4 w-full max-w-md"
           >
-            <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 backdrop-blur-xl">
+            <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 sm:p-4 backdrop-blur-xl">
               <div className="flex items-center space-x-2">
-                <Shield className="w-5 h-5 text-red-400" />
-                <span className="text-red-400 font-medium">Security Alert: Unauthorized action detected</span>
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />
+                <span className="text-red-400 font-medium text-sm sm:text-base">Security Alert: Unauthorized action detected</span>
               </div>
             </div>
           </motion.div>
@@ -142,10 +142,10 @@ const StudentDashboard = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
-          <h1 className="text-3xl font-bold text-white mb-2">Live Poll Session</h1>
-          <div className="flex items-center justify-center space-x-4 text-gray-400">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Live Poll Session</h1>
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 text-gray-400">
             <div className="flex items-center space-x-1">
               <Shield className="w-4 h-4" />
               <span className="text-sm">Secure Session</span>
@@ -161,11 +161,11 @@ const StudentDashboard = () => {
         <motion.div
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: 1, scaleX: 1 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400">Question {currentQuestion + 1} of {questions.length}</span>
-            <span className="text-gray-400">{Math.round(progress)}% Complete</span>
+            <span className="text-gray-400 text-sm">Question {currentQuestion + 1} of {questions.length}</span>
+            <span className="text-gray-400 text-sm">{Math.round(progress)}% Complete</span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
             <motion.div
@@ -185,17 +185,17 @@ const StudentDashboard = () => {
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.3 }}
         >
-          <GlassCard className="p-8 mb-8">
+          <GlassCard className="p-4 sm:p-8 mb-6 sm:mb-8">
             {/* Timer */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-4 sm:space-y-0">
               <div className="flex items-center space-x-2">
-                <Clock className="w-5 h-5 text-primary-400" />
-                <span className="text-white font-medium">Time Remaining</span>
+                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400" />
+                <span className="text-white font-medium text-sm sm:text-base">Time Remaining</span>
               </div>
               <div className={`flex items-center space-x-2 ${timeLeft <= 10 ? 'text-red-400' : 'text-primary-400'}`}>
-                <span className="text-2xl font-bold">{timeLeft}s</span>
-                <div className="w-12 h-12 relative">
-                  <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+                <span className="text-xl sm:text-2xl font-bold">{timeLeft}s</span>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 relative">
+                  <svg className="w-10 h-10 sm:w-12 sm:h-12 transform -rotate-90" viewBox="0 0 36 36">
                     <path
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                       fill="none"
@@ -216,12 +216,12 @@ const StudentDashboard = () => {
             </div>
 
             {/* Question */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">{question.question}</h2>
+            <div className="mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">{question.question}</h2>
             </div>
 
             {/* Options */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {question.options.map((option, index) => (
                 <motion.button
                   key={index}
@@ -229,7 +229,7 @@ const StudentDashboard = () => {
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleAnswerSelect(index)}
                   disabled={isAnswered}
-                  className={`w-full p-4 rounded-lg border-2 transition-all duration-200 text-left ${
+                  className={`w-full p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 text-left ${
                     selectedAnswer === index.toString()
                       ? 'border-primary-500 bg-primary-500/20 text-primary-400'
                       : 'border-gray-600 bg-white/5 text-gray-300 hover:border-gray-500 hover:bg-white/10'
@@ -242,7 +242,7 @@ const StudentDashboard = () => {
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                    <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                       selectedAnswer === index.toString()
                         ? 'border-primary-500 bg-primary-500'
                         : 'border-gray-600'
@@ -251,12 +251,12 @@ const StudentDashboard = () => {
                         <div className="w-2 h-2 bg-white rounded-full" />
                       )}
                     </div>
-                    <span className="font-medium">{option}</span>
+                    <span className="font-medium text-sm sm:text-base flex-1">{option}</span>
                     {showResult && index === question.correct && (
-                      <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />
+                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />
                     )}
                     {showResult && selectedAnswer === index.toString() && index !== question.correct && (
-                      <AlertCircle className="w-5 h-5 text-red-400 ml-auto" />
+                      <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />
                     )}
                   </div>
                 </motion.button>
@@ -271,7 +271,7 @@ const StudentDashboard = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSubmit}
-                className="w-full mt-6 bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-3 px-6 rounded-lg font-medium hover:from-primary-600 hover:to-secondary-600 transition-all duration-200"
+                className="w-full mt-4 sm:mt-6 bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 text-sm sm:text-base"
               >
                 Submit Answer
               </motion.button>
@@ -284,17 +284,17 @@ const StudentDashboard = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="mt-6 text-center"
+                  className="mt-4 sm:mt-6 text-center"
                 >
                   {selectedAnswer === question.correct.toString() ? (
                     <div className="text-green-400">
-                      <CheckCircle className="w-8 h-8 mx-auto mb-2" />
-                      <p className="font-medium">Correct! Well done.</p>
+                      <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2" />
+                      <p className="font-medium text-sm sm:text-base">Correct! Well done.</p>
                     </div>
                   ) : (
                     <div className="text-red-400">
-                      <AlertCircle className="w-8 h-8 mx-auto mb-2" />
-                      <p className="font-medium">Incorrect. The correct answer was option {question.correct + 1}.</p>
+                      <AlertCircle className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2" />
+                      <p className="font-medium text-sm sm:text-base">Incorrect. The correct answer was option {question.correct + 1}.</p>
                     </div>
                   )}
                 </motion.div>
@@ -308,19 +308,19 @@ const StudentDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6"
         >
-          <GlassCard className="p-6 text-center">
-            <div className="text-2xl font-bold text-white mb-2">85%</div>
-            <div className="text-gray-400">Your Accuracy</div>
+          <GlassCard className="p-4 sm:p-6 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-white mb-2">85%</div>
+            <div className="text-gray-400 text-sm sm:text-base">Your Accuracy</div>
           </GlassCard>
-          <GlassCard className="p-6 text-center">
-            <div className="text-2xl font-bold text-white mb-2">24</div>
-            <div className="text-gray-400">Questions Answered</div>
+          <GlassCard className="p-4 sm:p-6 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-white mb-2">24</div>
+            <div className="text-gray-400 text-sm sm:text-base">Questions Answered</div>
           </GlassCard>
-          <GlassCard className="p-6 text-center">
-            <div className="text-2xl font-bold text-white mb-2">2.1s</div>
-            <div className="text-gray-400">Avg Response Time</div>
+          <GlassCard className="p-4 sm:p-6 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-white mb-2">2.1s</div>
+            <div className="text-gray-400 text-sm sm:text-base">Avg Response Time</div>
           </GlassCard>
         </motion.div>
 
@@ -329,12 +329,12 @@ const StudentDashboard = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="mt-8 text-center"
+          className="mt-6 sm:mt-8 text-center"
         >
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-            <div className="flex items-center justify-center space-x-2 text-yellow-400">
-              <Shield className="w-5 h-5" />
-              <span className="text-sm">
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2 text-yellow-400">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm text-center">
                 This session is monitored for security. Screenshot detection and copy protection are active.
               </span>
             </div>
