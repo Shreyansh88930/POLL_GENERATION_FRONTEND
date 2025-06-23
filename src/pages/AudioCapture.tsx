@@ -78,15 +78,15 @@ const AudioCapture = () => {
   };
 
   return (
-    <DashboardLayout>
+     <DashboardLayout>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-6"
+        className="space-y-6 "
       >
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Audio Capture</h1>
             <p className="text-gray-400">Real-time audio recording and transcription</p>
@@ -238,7 +238,7 @@ const AudioCapture = () => {
 
         {/* Transcription Output */}
         <GlassCard className="p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
             <h3 className="text-xl font-bold text-white">Real-time Transcription</h3>
             <div className="flex items-center space-x-2">
               <Activity className="w-4 h-4 text-primary-400" />
@@ -268,7 +268,7 @@ const AudioCapture = () => {
         </GlassCard>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-center space-x-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
