@@ -407,7 +407,22 @@ const AIQuestionFeed = () => {
             </AnimatePresence>
           </div>
         </GlassCard>
+        {/* Regenerate Questions Button */}
+<div className="flex justify-start mt-4">
+  <motion.button
+    onClick={() => {
+      console.log("Regenerating questions...")
+      // TODO: Add logic to regenerate questions here
+    }}
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="px-5 py-2.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/30 backdrop-blur-md text-sm font-semibold rounded-lg shadow-md transition-all duration-200"
+  >
+    🔁 Regenerate Questions
+  </motion.button>
+</div>
       </motion.div>
+      
       <AIControlPanel
         isOpen={isControlPanelOpen}
         onToggle={() => setIsControlPanelOpen(!isControlPanelOpen)}
