@@ -92,6 +92,7 @@ const HostDashboard = () => {
     <>
       <OrbitalNavigation currentPath="/host" />
       <DashboardLayout>
+        <div className="mt-4 md:mt-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -99,20 +100,21 @@ const HostDashboard = () => {
           className="space-y-6"
         >
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Classic Dashboard</h1>
-              <p className="text-gray-400">Welcome back! Here's your polling system overview.</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Classic Dashboard</h1>
+              <p className="text-gray-400 text-sm sm:text-base">Welcome back! Here's your polling system overview.</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+              {/* System Active Tag */}
+              <div className="bg-green-500/20 text-green-400 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium break-words text-center w-full sm:w-auto">
                 System Active
               </div>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {statsCards.map((card, index) => (
               <motion.div
                 key={card.title}
@@ -146,24 +148,24 @@ const HostDashboard = () => {
             >
               <GlassCard className="p-6">
                 <h3 className="text-xl font-bold text-white mb-4">Participation Trends</h3>
-                <div className="h-64">
+                <div className="h-64 min-w-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={participationData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                       <XAxis dataKey="name" stroke="#9CA3AF" />
                       <YAxis stroke="#9CA3AF" />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'rgba(17, 24, 39, 0.8)', 
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'rgba(17, 24, 39, 0.8)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '8px',
                           color: '#fff'
-                        }} 
+                        }}
                       />
-                      <Line 
-                        type="monotone" 
-                        dataKey="participants" 
-                        stroke="#8B5CF6" 
+                      <Line
+                        type="monotone"
+                        dataKey="participants"
+                        stroke="#8B5CF6"
                         strokeWidth={2}
                         dot={{ fill: '#8B5CF6', strokeWidth: 2 }}
                       />
@@ -181,19 +183,19 @@ const HostDashboard = () => {
             >
               <GlassCard className="p-6">
                 <h3 className="text-xl font-bold text-white mb-4">Confusion Analysis</h3>
-                <div className="h-64">
+                <div className="h-64 min-w-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={confusionData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                       <XAxis dataKey="topic" stroke="#9CA3AF" />
                       <YAxis stroke="#9CA3AF" />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'rgba(17, 24, 39, 0.8)', 
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'rgba(17, 24, 39, 0.8)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '8px',
                           color: '#fff'
-                        }} 
+                        }}
                       />
                       <Bar dataKey="confusion" fill="#3B82F6" radius={[4, 4, 0, 0]} />
                     </BarChart>
@@ -211,7 +213,7 @@ const HostDashboard = () => {
           >
             <GlassCard className="p-6">
               <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {quickActions.map((action, index) => (
                   <motion.a
                     key={action.title}
@@ -247,7 +249,7 @@ const HostDashboard = () => {
                   { action: 'Question approved', time: '18 minutes ago', user: 'Host' },
                   { action: 'Report generated', time: '25 minutes ago', user: 'System' },
                 ].map((activity, index) => (
-                  <div key={index} className="flex items-center justify-between py-2">
+                  <div key={index} className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 gap-1">
                     <div>
                       <p className="text-white font-medium">{activity.action}</p>
                       <p className="text-sm text-gray-400">{activity.user}</p>
@@ -259,6 +261,7 @@ const HostDashboard = () => {
             </GlassCard>
           </motion.div>
         </motion.div>
+        </div>
       </DashboardLayout>
     </>
   );
