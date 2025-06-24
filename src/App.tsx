@@ -18,6 +18,8 @@ import Leaderboard from './pages/Leaderboard';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import HomePage from './pages/HomePage';
+import CreateManualPoll from './pages/CreateManualPoll';
+import CreatePollPage from './pages/CreatePollPage';
 
 function App() {
   return (
@@ -50,6 +52,16 @@ function App() {
                 <Route path="/host/ai-questions" element={
                   <AuthGuard requiredRole="host">
                     <AIQuestionFeed />
+                  </AuthGuard>
+                } />
+                <Route path="/host/create-manual-poll" element={
+                  <AuthGuard requiredRole="host">
+                    <CreateManualPoll />
+                  </AuthGuard>
+                } />
+                <Route path="/host/create-poll" element={
+                  <AuthGuard requiredRole="host">
+                    <CreatePollPage />
                   </AuthGuard>
                 } />
                 <Route path="/host/participants" element={
