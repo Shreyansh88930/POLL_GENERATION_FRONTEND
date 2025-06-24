@@ -64,7 +64,10 @@ const Settings = () => {
     { name: 'Orange', primary: '#F59E0B', secondary: '#D97706', accent: '#EF4444' },
   ];
 
-  const handleSettingChange = (key: string, value: any) => {
+  type SettingsKey = keyof typeof settings;
+  type SettingsValue = typeof settings[SettingsKey];
+
+  const handleSettingChange = (key: SettingsKey, value: SettingsValue) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
@@ -116,20 +119,20 @@ const Settings = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-4 sm:space-y-6"
+        className="space-y-6"
       >
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Settings</h1>
-            <p className="text-gray-400 text-sm sm:text-base">Customize your polling system preferences</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
+            <p className="text-gray-400">Customize your polling system preferences</p>
           </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+          <div className="flex items-center space-x-4">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleResetSettings}
-              className="flex items-center justify-center space-x-2 px-3 sm:px-4 py-2 bg-gray-500/20 text-gray-400 rounded-lg hover:bg-gray-500/30 transition-colors duration-200 text-sm"
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-500/20 text-gray-400 rounded-lg hover:bg-gray-500/30 transition-colors duration-200"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Reset</span>
@@ -138,7 +141,7 @@ const Settings = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSaveSettings}
-              className="flex items-center justify-center space-x-2 px-3 sm:px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200 text-sm"
+              className="flex items-center space-x-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200"
             >
               <Save className="w-4 h-4" />
               <span>Save Changes</span>
@@ -146,14 +149,14 @@ const Settings = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* General Settings */}
-          <GlassCard className="p-4 sm:p-6">
-            <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center">
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
               <SettingsIcon className="w-5 h-5 mr-2" />
               General Settings
             </h3>
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Default Timer Duration
@@ -167,7 +170,7 @@ const Settings = () => {
                     onChange={(e) => handleSettingChange('defaultTimer', parseInt(e.target.value))}
                     className="flex-1"
                   />
-                  <span className="text-white font-medium w-12 text-sm">{settings.defaultTimer}s</span>
+                  <span className="text-white font-medium w-12">{settings.defaultTimer}s</span>
                 </div>
               </div>
 
@@ -196,12 +199,12 @@ const Settings = () => {
           </GlassCard>
 
           {/* Audio Settings */}
-          <GlassCard className="p-4 sm:p-6">
-            <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center">
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
               <Mic className="w-5 h-5 mr-2" />
               Audio Settings
             </h3>
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Microphone Device
@@ -209,7 +212,7 @@ const Settings = () => {
                 <select
                   value={settings.selectedMicrophone}
                   onChange={(e) => handleSettingChange('selectedMicrophone', e.target.value)}
-                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
                   {microphoneOptions.map(option => (
                     <option key={option.id} value={option.id} className="bg-gray-800">
@@ -224,7 +227,7 @@ const Settings = () => {
                   Microphone Volume
                 </label>
                 <div className="flex items-center space-x-4">
-                  <Volume2 className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <Volume2 className="w-4 h-4 text-gray-400" />
                   <input
                     type="range"
                     min="0"
@@ -233,7 +236,7 @@ const Settings = () => {
                     onChange={(e) => handleSettingChange('microphoneVolume', parseInt(e.target.value))}
                     className="flex-1"
                   />
-                  <span className="text-white font-medium w-12 text-sm">{settings.microphoneVolume}%</span>
+                  <span className="text-white font-medium w-12">{settings.microphoneVolume}%</span>
                 </div>
               </div>
 
@@ -251,12 +254,12 @@ const Settings = () => {
           </GlassCard>
 
           {/* Security Settings */}
-          <GlassCard className="p-4 sm:p-6">
-            <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center">
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
               <Shield className="w-5 h-5 mr-2" />
               Security Settings
             </h3>
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-sm font-medium text-gray-300">Screenshot Detection</label>
@@ -295,7 +298,7 @@ const Settings = () => {
                   Session Timeout (minutes)
                 </label>
                 <div className="flex items-center space-x-4">
-                  <Clock className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <Clock className="w-4 h-4 text-gray-400" />
                   <input
                     type="range"
                     min="15"
@@ -304,19 +307,19 @@ const Settings = () => {
                     onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}
                     className="flex-1"
                   />
-                  <span className="text-white font-medium w-12 text-sm">{settings.sessionTimeout}m</span>
+                  <span className="text-white font-medium w-12">{settings.sessionTimeout}m</span>
                 </div>
               </div>
             </div>
           </GlassCard>
 
           {/* Theme Settings */}
-          <GlassCard className="p-4 sm:p-6">
-            <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center">
+          <GlassCard className="p-6">
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
               <Palette className="w-5 h-5 mr-2" />
               Theme Settings
             </h3>
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-sm font-medium text-gray-300">Dark Mode</label>
@@ -334,7 +337,7 @@ const Settings = () => {
                 <label className="block text-sm font-medium text-gray-300 mb-3">
                   Color Presets
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {colorPresets.map((preset, index) => (
                     <button
                       key={index}
@@ -372,7 +375,7 @@ const Settings = () => {
                 <select
                   value={settings.fontSize}
                   onChange={(e) => handleSettingChange('fontSize', e.target.value)}
-                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
                   <option value="small" className="bg-gray-800">Small</option>
                   <option value="medium" className="bg-gray-800">Medium</option>
@@ -383,12 +386,12 @@ const Settings = () => {
           </GlassCard>
 
           {/* AI Settings */}
-          <GlassCard className="p-4 sm:p-6 lg:col-span-2">
-            <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center">
+          <GlassCard className="p-6 lg:col-span-2">
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
               <Bell className="w-5 h-5 mr-2" />
               AI & Automation Settings
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   AI Confidence Threshold
@@ -402,7 +405,7 @@ const Settings = () => {
                     onChange={(e) => handleSettingChange('aiConfidenceThreshold', parseInt(e.target.value))}
                     className="flex-1"
                   />
-                  <span className="text-white font-medium w-12 text-sm">{settings.aiConfidenceThreshold}%</span>
+                  <span className="text-white font-medium w-12">{settings.aiConfidenceThreshold}%</span>
                 </div>
                 <p className="text-xs text-gray-400 mt-1">Minimum confidence for AI-generated questions</p>
               </div>
