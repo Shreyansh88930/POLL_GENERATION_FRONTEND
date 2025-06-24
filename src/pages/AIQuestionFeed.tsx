@@ -128,45 +128,45 @@ const AIQuestionFeed = () => {
   })
 
   return (
-    <DashboardLayout>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="space-y-4 sm:space-y-6"
-      >
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">AI Question Feed</h1>
-            <p className="text-gray-400 text-sm sm:text-base">Review and manage AI-generated questions</p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-            <div className="bg-primary-500/20 text-primary-400 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-              {filteredQuestions.filter((q) => q.status === "pending").length} Pending
-            </div>
-            {/* Only show AI Config button when not scrolled */}
-            {!isScrolled && (
-              <motion.button
-                onClick={() => setIsControlPanelOpen(true)}
-                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-primary-500/20 text-primary-400 rounded-lg border border-primary-500/30 hover:bg-primary-500/30 transition-colors duration-200 text-sm sm:text-base"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-              >
-                <Settings className="w-4 h-4" />
-                <span>AI Config</span>
-              </motion.button>
-            )}
-          </div>
+<DashboardLayout>
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+    className="space-y-6 overflow-x-hidden"
+  >
+    {/* Header */}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h1 className="text-3xl font-bold text-white mb-2">AI Question Feed</h1>
+        <p className="text-gray-400">Review and manage AI-generated questions</p>
+      </div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+        <div className="bg-primary-500/20 text-primary-400 px-3 py-1 rounded-full text-sm font-medium">
+          {filteredQuestions.filter((q) => q.status === "pending").length} Pending
         </div>
+        {!isScrolled && (
+          <motion.button
+            onClick={() => setIsControlPanelOpen(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-500/20 text-primary-400 rounded-lg border border-primary-500/30 hover:bg-primary-500/30 transition-colors duration-200"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+          >
+            <Settings className="w-4 h-4" />
+            <span>AI Config</span>
+          </motion.button>
+        )}
+      </div>
+    </div>
+
 
         {/* Controls */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Filter Settings */}
-          <GlassCard className="p-4 sm:p-6">
+          <GlassCard className="p-6">
             <h3 className="text-lg font-bold text-white mb-4 flex items-center">
               <Filter className="w-5 h-5 mr-2" />
               Filter Settings
@@ -177,7 +177,7 @@ const AIQuestionFeed = () => {
                 <select
                   value={filterSettings.difficulty}
                   onChange={(e) => setFilterSettings((prev) => ({ ...prev, difficulty: e.target.value }))}
-                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
                   <option value="all" className="bg-gray-800">
                     All Levels
@@ -213,7 +213,7 @@ const AIQuestionFeed = () => {
           </GlassCard>
 
           {/* Auto-Launch Settings */}
-          <GlassCard className="p-4 sm:p-6">
+          <GlassCard className="p-6">
             <h3 className="text-lg font-bold text-white mb-4 flex items-center">
               <Settings className="w-5 h-5 mr-2" />
               Auto-Launch Settings
@@ -223,14 +223,12 @@ const AIQuestionFeed = () => {
                 <label className="text-sm font-medium text-gray-300">Enable Auto-Launch</label>
                 <button
                   onClick={() => setAutoLaunch(!autoLaunch)}
-                  className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${
-                    autoLaunch ? "bg-primary-500" : "bg-gray-600"
-                  }`}
+                  className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${autoLaunch ? "bg-primary-500" : "bg-gray-600"
+                    }`}
                 >
                   <span
-                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${
-                      autoLaunch ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${autoLaunch ? "translate-x-6" : "translate-x-1"
+                      }`}
                   />
                 </button>
               </div>
@@ -239,18 +237,16 @@ const AIQuestionFeed = () => {
                 <label className="text-sm font-medium text-gray-300">Timer Enabled</label>
                 <button
                   onClick={() => setTimerEnabled(!timerEnabled)}
-                  className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${
-                    timerEnabled ? "bg-primary-500" : "bg-gray-600"
-                  }`}
+                  className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${timerEnabled ? "bg-primary-500" : "bg-gray-600"
+                    }`}
                 >
                   <span
-                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${
-                      timerEnabled ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${timerEnabled ? "translate-x-6" : "translate-x-1"
+                      }`}
                   />
                 </button>
               </div>
-
+{timerEnabled && (
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Default Timer: {defaultTimer}s</label>
                 <input
@@ -262,31 +258,40 @@ const AIQuestionFeed = () => {
                   className="w-full"
                 />
               </div>
+              )}
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-gray-300">Stop Auto-Generated Questions</label>
+                <button
+                  className="px-4 py-1.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all duration-200"
+                >
+                  STOP
+                </button>
+              </div>
             </div>
           </GlassCard>
 
           {/* Quick Stats */}
-          <GlassCard className="p-4 sm:p-6">
+          <GlassCard className="p-6">
             <h3 className="text-lg font-bold text-white mb-4">Quick Stats</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-gray-300 text-sm">Total Questions</span>
+                <span className="text-gray-300">Total Questions</span>
                 <span className="text-white font-medium">{questions.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-300 text-sm">Approved</span>
+                <span className="text-gray-300">Approved</span>
                 <span className="text-green-400 font-medium">
                   {questions.filter((q) => q.status === "approved").length}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-300 text-sm">Pending</span>
+                <span className="text-gray-300">Pending</span>
                 <span className="text-yellow-400 font-medium">
                   {questions.filter((q) => q.status === "pending").length}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-300 text-sm">Avg Confidence</span>
+                <span className="text-gray-300">Avg Confidence</span>
                 <span className="text-white font-medium">
                   {Math.round(questions.reduce((acc, q) => acc + q.confidence, 0) / questions.length)}%
                 </span>
@@ -295,121 +300,134 @@ const AIQuestionFeed = () => {
           </GlassCard>
         </div>
 
-        {/* Question Queue */}
-        <GlassCard className="p-4 sm:p-6">
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Question Queue</h3>
-          <div className="space-y-4">
-            <AnimatePresence>
-              {filteredQuestions.map((question, index) => (
-                <motion.div
-                  key={question.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white/5 rounded-lg border border-white/10 p-4 sm:p-6 hover:border-white/20 transition-colors duration-200"
-                >
-                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
-                    <div className="flex-1 lg:mr-4">
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(question.difficulty)}`}
-                        >
-                          {question.difficulty}
-                        </span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(question.status)}`}
-                        >
-                          {question.status}
-                        </span>
-                        <div className="flex items-center space-x-1 text-gray-400">
-                          <Brain className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="text-xs">{question.confidence}% confidence</span>
-                        </div>
-                        <div className="flex items-center space-x-1 text-gray-400">
-                          <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="text-xs">{question.timeEstimate}</span>
-                        </div>
-                      </div>
-                      <h4 className="text-base sm:text-lg font-medium text-white mb-3">{question.question}</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
-                        {question.options.map((option, optionIndex) => (
-                          <div
-                            key={optionIndex}
-                            className={`p-2 rounded-lg text-xs sm:text-sm ${
-                              optionIndex === question.correct
-                                ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                                : "bg-white/5 text-gray-300 border border-gray-600"
-                            }`}
-                          >
-                            {option}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        {question.tags.map((tag, tagIndex) => (
-                          <span
-                            key={tagIndex}
-                            className="px-2 py-1 bg-primary-500/20 text-primary-400 rounded-full text-xs"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+{/* Question Queue */}
+    <GlassCard className="p-6">
+      <h3 className="text-xl font-bold text-white mb-6">Question Queue</h3>
+      <div className="space-y-4">
+        <AnimatePresence>
+          {filteredQuestions.map((question, index) => (
+            <motion.div
+              key={question.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white/5 rounded-lg border border-white/10 p-6 hover:border-white/20 transition-colors duration-200"
+            >
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(question.difficulty)}`}
+                    >
+                      {question.difficulty}
+                    </span>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(question.status)}`}
+                    >
+                      {question.status}
+                    </span>
+                    <div className="flex items-center space-x-1 text-gray-400">
+                      <Brain className="w-4 h-4" />
+                      <span className="text-xs">{question.confidence}% confidence</span>
                     </div>
-                    <div className="flex flex-row lg:flex-col items-center lg:items-end space-x-2 lg:space-x-0 lg:space-y-2">
-                      {question.status === "pending" && (
-                        <>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => handleApprove(question.id)}
-                            className="p-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors duration-200"
-                          >
-                            <Check className="w-4 h-4" />
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => handleReject(question.id)}
-                            className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors duration-200"
-                          >
-                            <X className="w-4 h-4" />
-                          </motion.button>
-                        </>
-                      )}
+                    <div className="flex items-center space-x-1 text-gray-400">
+                      <Clock className="w-4 h-4" />
+                      <span className="text-xs">{question.timeEstimate}</span>
+                    </div>
+                  </div>
+                  <h4 className="text-lg font-medium text-white mb-3">{question.question}</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+                    {question.options.map((option, optionIndex) => (
+                      <div
+                        key={optionIndex}
+                        className={`p-2 rounded-lg text-sm ${optionIndex === question.correct
+                          ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                          : "bg-white/5 text-gray-300 border border-gray-600"
+                          }`}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {question.tags.map((tag, tagIndex) => (
+                      <span
+                        key={tagIndex}
+                        className="px-2 py-1 bg-primary-500/20 text-primary-400 rounded-full text-xs"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-row flex-wrap items-center gap-2 md:ml-4">
+                  {question.status === "pending" && (
+                    <>
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={() => handleEdit(question.id)}
-                        className="p-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors duration-200"
+                        onClick={() => handleApprove(question.id)}
+                        className="p-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors duration-200"
                       >
-                        <Edit3 className="w-4 h-4" />
+                        <Check className="w-4 h-4" />
                       </motion.button>
-                      {question.status === "approved" && (
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => handleLaunch(question.id)}
-                          className="p-2 bg-primary-500/20 text-primary-400 rounded-lg hover:bg-primary-500/30 transition-colors duration-200"
-                        >
-                          <Play className="w-4 h-4" />
-                        </motion.button>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </GlassCard>
-      </motion.div>
-      <AIControlPanel
-        isOpen={isControlPanelOpen}
-        onToggle={() => setIsControlPanelOpen(!isControlPanelOpen)}
-        showFloatingButton={isScrolled}
-      />
-    </DashboardLayout>
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => handleReject(question.id)}
+                        className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors duration-200"
+                      >
+                        <X className="w-4 h-4" />
+                      </motion.button>
+                    </>
+                  )}
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleEdit(question.id)}
+                    className="p-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors duration-200"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </motion.button>
+                  {question.status === "approved" && (
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => handleLaunch(question.id)}
+                      className="p-2 bg-primary-500/20 text-primary-400 rounded-lg hover:bg-primary-500/30 transition-colors duration-200"
+                    >
+                      <Play className="w-4 h-4" />
+                    </motion.button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    </GlassCard>
+    {/* Regenerate Questions Button */}
+    <div className="flex flex-col sm:flex-row justify-start mt-4">
+      <motion.button
+        onClick={() => {
+          console.log("Regenerating questions...")
+          // TODO: Add logic to regenerate questions here
+        }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="px-5 py-2.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/30 backdrop-blur-md text-sm font-semibold rounded-lg shadow-md transition-all duration-200"
+      >
+        🔁 Regenerate Questions
+      </motion.button>
+    </div>
+  </motion.div>
+  <AIControlPanel
+    isOpen={isControlPanelOpen}
+    onToggle={() => setIsControlPanelOpen(!isControlPanelOpen)}
+    showFloatingButton={isScrolled}
+  />
+</DashboardLayout>
   )
 }
 
