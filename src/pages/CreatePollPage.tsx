@@ -28,6 +28,8 @@ interface StudentInvite {
   email: string
 }
 
+const POLL_STORAGE_KEY = "activePollSession";
+
 const CreatePollPage: React.FC = () => {
   const [roomCode, setRoomCode] = useState("")
   const [csvFile, setCsvFile] = useState<File | null>(null)
@@ -43,6 +45,49 @@ const CreatePollPage: React.FC = () => {
   const [invitesSent, setInvitesSent] = useState(false)
   const [roomName, setRoomName] = useState("");
   const [roomNameError, setRoomNameError] = useState("");
+
+  // Load poll session from localStorage if active
+  useEffect(() => {
+    const saved = localStorage.getItem(POLL_STORAGE_KEY);
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        if (data.isPollActive) {
+          setRoomCode(data.roomCode || "");
+          setRoomName(data.roomName || "");
+          setTimeRemaining(
+            typeof data.timeRemaining === "number"
+              ? data.timeRemaining
+              : 3 * 60 * 60
+          );
+          setIsPollActive(true);
+        } else {
+          setRoomCode(generateRoomCode());
+        }
+      } catch {
+        setRoomCode(generateRoomCode());
+      }
+    } else {
+      setRoomCode(generateRoomCode());
+    }
+  }, []);
+
+  // Persist poll session to localStorage only if poll is active
+  useEffect(() => {
+    if (isPollActive) {
+      localStorage.setItem(
+        POLL_STORAGE_KEY,
+        JSON.stringify({
+          roomCode,
+          roomName,
+          timeRemaining,
+          isPollActive: true,
+        })
+      );
+    } else {
+      localStorage.removeItem(POLL_STORAGE_KEY);
+    }
+  }, [isPollActive, roomCode, roomName, timeRemaining]);
 
   // Generate random room code
   const generateRoomCode = (): string => {
@@ -69,6 +114,7 @@ const CreatePollPage: React.FC = () => {
       setTimeRemaining(3 * 60 * 60) // Reset to 3 hours
       setRoomCode(generateRoomCode()) // Generate new code
       setIsDestroying(false)
+      localStorage.removeItem(POLL_STORAGE_KEY) // Clear persisted session
       console.log("Room destroyed and reset")
     }, 1500)
   }
@@ -103,9 +149,7 @@ const CreatePollPage: React.FC = () => {
     setTimeRemaining((prev) => prev + hours * 60 * 60)
   }
 
-  useEffect(() => {
-    setRoomCode(generateRoomCode())
-  }, [])
+  
 
 
 
