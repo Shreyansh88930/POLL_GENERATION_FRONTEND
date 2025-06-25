@@ -2,11 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Users, Target, TrendingUp, Clock, Brain, Mic, Trophy, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import GlassCard from '../components/GlassCard';
 import OrbitalNavigation from '../components/OrbitalNavigation';
 
 const HostDashboard = () => {
+  const navigate = useNavigate();
+
   // Mock data
   const participationData = [
     { name: 'Mon', participants: 45, accuracy: 85 },
@@ -110,6 +113,13 @@ const HostDashboard = () => {
               <div className="bg-green-500/20 text-green-400 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium break-words text-center w-full sm:w-auto">
                 System Active
               </div>
+              {/* Switch to Student Button */}
+              <button
+                onClick={() => navigate('/student')}
+                className="ml-0 sm:ml-4 mt-2 sm:mt-0 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xs sm:text-sm font-medium transition"
+              >
+                Switch to Student
+              </button>
             </div>
           </div>
 

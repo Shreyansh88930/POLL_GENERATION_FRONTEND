@@ -20,9 +20,17 @@ import Settings from './pages/Settings';
 import HomePage from './pages/HomePage';
 import CreateManualPoll from './pages/CreateManualPoll';
 import CreatePollPage from './pages/CreatePollPage';
+import ContactUs from './pages/ContactUs';
+
+// Student dashboard section imports
 import JoinPollPage from './components/student/JoinPollPage';
-import AchievementPage from './components/student/AchievementPage';
+import PollHistoryPage from './components/student/PollHistoryPage';
 import PollQuestionsPage from './components/student/PollQuestionsPage';
+import StudentProfilePage from './components/student/StudentProfilePage';
+import AchievementPage from './components/student/AchievementPage';
+import NotificationPage from './components/student/NotificationPage';
+import SettingsStudent from './components/student/Settings';
+import StudentLeaderboard from './components/student/StudentLeaderboard';
 
 function App() {
   return (
@@ -37,66 +45,67 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/contactUs" element={<ContactUs />} />
+                {/* Host Dashboard Routes */}
                 <Route path="/host" element={
-                  <AuthGuard requiredRole="host">
                     <HostDashboard />
-                  </AuthGuard>
                 } />
                 <Route path="/host/orbital" element={
-                  <AuthGuard requiredRole="host">
                     <OrbitalHostDashboard />
-                  </AuthGuard>
                 } />
                 <Route path="/host/audio" element={
-                  <AuthGuard requiredRole="host">
                     <AudioCapture />
-                  </AuthGuard>
                 } />
                 <Route path="/host/ai-questions" element={
-                  <AuthGuard requiredRole="host">
                     <AIQuestionFeed />
-                  </AuthGuard>
                 } />
                 <Route path="/host/create-manual-poll" element={
-                  <AuthGuard requiredRole="host">
                     <CreateManualPoll />
-                  </AuthGuard>
                 } />
                 <Route path="/host/create-poll" element={
-                  <AuthGuard requiredRole="host">
                     <CreatePollPage />
-                  </AuthGuard>
                 } />
                 <Route path="/host/participants" element={
-                  <AuthGuard requiredRole="host">
                     <Participants />
-                  </AuthGuard>
                 } />
                 <Route path="/host/leaderboard" element={
-                  <AuthGuard requiredRole="host">
                     <Leaderboard />
-                  </AuthGuard>
                 } />
                 <Route path="/host/reports" element={
-                  <AuthGuard requiredRole="host">
                     <Reports />
-                  </AuthGuard>
                 } />
                 <Route path="/host/settings" element={
-                  <AuthGuard requiredRole="host">
                     <Settings />
-                  </AuthGuard>
                 } />
+
+                {/* Student Dashboard Routes */}
                 <Route path="/student" element={
-                  <AuthGuard requiredRole="student">
                     <StudentDashboard />
-                  </AuthGuard>
                 } />
-                <Route path="/student/dashboard" element={<StudentDashboard />} />
-        <Route path="/student/join-poll" element={<JoinPollPage />} />
-        <Route path="/student/achievements" element={<AchievementPage />} />
-        <Route path="/student/poll-questions" element={<PollQuestionsPage meetingLink="" />} />
-                <Route path="/" element={<LoginPage />} />
+                <Route path="/student/join-poll" element={
+                    <JoinPollPage />
+                } />
+                <Route path="/student/history" element={
+                    <PollHistoryPage />
+                } />
+                <Route path="/student/poll-questions" element={
+                    <PollQuestionsPage />
+                } />
+                <Route path="/student/profile" element={
+                    <StudentProfilePage />
+                } />
+                <Route path="/student/achievements" element={
+                    <AchievementPage />
+                } />
+                <Route path="/student/notifications" element={
+                    <NotificationPage />
+                } />
+                <Route path="/student/settings" element={
+                    <SettingsStudent />
+                } />
+                <Route path="/student/leaderboard" element={
+                    <StudentLeaderboard />
+                } />
               </Routes>
             </div>
           </Router>

@@ -4,13 +4,12 @@ interface User {
   id: string;
   email: string;
   fullName: string;
-  role: 'host' | 'student';
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, role: 'host' | 'student') => Promise<void>;
-  register: (fullName: string, email: string, password: string, role: 'host' | 'student') => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (fullName: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   forgotPassword: (email: string) => Promise<void>;
   isAuthenticated: boolean;
@@ -32,22 +31,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string, role: 'host' | 'student') => {
+  const login = async (email: string, password: string) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     const mockUser = {
       id: '1',
       email,
-      fullName: 'John Doe',
-      role
+      fullName: 'John Doe'
     };
     
     setUser(mockUser);
     localStorage.setItem('user', JSON.stringify(mockUser));
   };
 
-  const register = async (fullName: string, email: string, password: string, role: string) => {
+  const register = async (fullName: string, email: string, password: string) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
@@ -57,8 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const mockUser = {
       id: '1',
       email,
-      fullName,
-      role
+      fullName
     };
     
     setUser(mockUser);
@@ -101,5 +98,5 @@ export const useAuth = () => {
 export function validatePassword(password: string) {
   if (password.length < 6) throw new Error('Password must be at least 6 characters');
   if (!/[a-zA-Z]/.test(password)) throw new Error('Password must contain at least one letter');
-  if (!/\d/.test(password)) throw new Error('Password must contain at least one number');
+  if (!/\d/.test(password)) throw new Error('Password must contain at least one number');
 }

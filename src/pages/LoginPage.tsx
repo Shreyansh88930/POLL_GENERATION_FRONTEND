@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Mail, Lock, Eye, EyeOff, Brain, Loader } from 'lucide-react';
@@ -9,7 +9,6 @@ import GlassCard from '../components/GlassCard';
 interface LoginForm {
   email: string;
   password: string;
-  role: 'host' | 'student';
 }
 
 const LoginPage = () => {
@@ -17,14 +16,22 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<LoginForm>();
-  const selectedRole = watch('role');
-
+  const location = useLocation();
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>();
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get("redirect");
+  
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      await login(data.email, data.password, data.role);
-      navigate(data.role === 'host' ? '/host' : '/student');
+      await login(data.email, data.password);
+      if (redirect === 'create-poll') {
+        navigate('/host/create-poll');
+      } else if (redirect === 'join-poll') {
+        navigate('/student/join-poll');
+      } else {
+        navigate('/host');
+      }
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
@@ -62,37 +69,6 @@ const LoginPage = () => {
           </motion.div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
-            {/* Role Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Role
-              </label>
-              <div className="flex space-x-2 sm:space-x-3">
-                {(['host', 'student'] as const).map((role) => (
-                  <label key={role} className="flex-1">
-                    <input
-                      type="radio"
-                      value={role}
-                      {...register('role', { required: 'Please select a role' })}
-                      className="sr-only"
-                    />
-                    <div
-                      className={`p-2 sm:p-3 rounded-lg border text-center cursor-pointer transition-colors text-sm sm:text-base
-                        ${selectedRole === role
-                          ? 'border-primary-500 bg-primary-500/20 shadow-lg'
-                          : 'border-gray-600 hover:border-primary-500'}
-                        `}
-                    >
-                      <span className="text-white capitalize">{role}</span>
-                    </div>
-                  </label>
-                ))}
-              </div>
-              {errors.role && (
-                <p className="mt-1 text-sm text-red-400">{errors.role.message}</p>
-              )}
-            </div>
-
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -180,7 +156,7 @@ const LoginPage = () => {
             <p className="text-gray-400 text-sm">
               Don't have an account?{' '}
               <Link
-                to="/register"
+                to={`/register${redirect ? `?redirect=${redirect}` : ""}`}
                 className="text-primary-400 hover:text-primary-300 transition-colors"
               >
                 Sign up

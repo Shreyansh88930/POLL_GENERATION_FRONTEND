@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Menu, X } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import StudentSidebar from "../components/StudentSidebar"
 import WelcomeSection from "../components/student/WelcomeSection"
 import QuickAccessCards from "../components/student/QuickAccessCards"
@@ -20,6 +21,7 @@ const StudentDashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard")
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentMeetingLink, setCurrentMeetingLink] = useState("")
+  const navigate = useNavigate()
 
   const handleJoinPoll = (meetingLink: string) => {
     setCurrentMeetingLink(meetingLink)
@@ -27,7 +29,6 @@ const StudentDashboard = () => {
   }
 
   const handlePollComplete = () => {
-    // Navigate back to dashboard or show results
     setActiveSection("dashboard")
     setCurrentMeetingLink("")
   }
@@ -42,6 +43,14 @@ const StudentDashboard = () => {
             transition={{ duration: 0.5 }}
             className="space-y-6"
           >
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => navigate("/host")}
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xs sm:text-sm font-medium transition"
+              >
+                Switch to Host
+              </button>
+            </div>
             <WelcomeSection />
             <QuickAccessCards onSectionChange={setActiveSection} />
 
@@ -123,6 +132,14 @@ const StudentDashboard = () => {
             transition={{ duration: 0.5 }}
             className="space-y-6"
           >
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => navigate("/host")}
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xs sm:text-sm font-medium transition"
+              >
+                Switch to Host
+              </button>
+            </div>
             <WelcomeSection />
             <QuickAccessCards onSectionChange={setActiveSection} />
           </motion.div>

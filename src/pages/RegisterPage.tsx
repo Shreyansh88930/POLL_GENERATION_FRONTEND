@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation  } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useForm } from "react-hook-form"
 import { Mail, Lock, Eye, EyeOff, Brain, Loader, User } from "lucide-react"
@@ -13,7 +13,6 @@ interface RegisterForm {
   email: string
   password: string
   confirmPassword: string
-  role: "host" | "student"
 }
 
 const RegisterPage = () => {
@@ -23,6 +22,9 @@ const RegisterPage = () => {
   const [registerError, setRegisterError] = useState<string | null>(null)
   const { register: registerUser } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
+  const redirect = params.get("redirect")
   const {
     register,
     handleSubmit,
@@ -45,14 +47,16 @@ const RegisterPage = () => {
     return "Strong"
   }
 
-  const selectedRole = watch("role")
-
   const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true)
     setRegisterError(null)
     try {
-      await registerUser(data.fullName, data.email, data.password, data.role)
-      navigate(data.role === "host" ? "/host" : "/student")
+      await registerUser(data.fullName, data.email, data.password)
+      if (redirect === "create-poll" || redirect === "join-poll") {
+        navigate(`/login?redirect=${redirect}`)
+      } else {
+        navigate("/login")
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setRegisterError(error.message || "Registration failed")
@@ -119,35 +123,6 @@ const RegisterPage = () => {
                 />
               </div>
               {errors.fullName && <p className="mt-1 text-xs sm:text-sm text-red-400">{errors.fullName.message}</p>}
-            </div>
-
-            {/* Role Selection */}
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1 sm:mb-2">Role</label>
-              <div className="flex space-x-2 sm:space-x-3">
-                {(["host", "student"] as const).map((role) => (
-                  <label key={role} className="flex-1">
-                    <input
-                      type="radio"
-                      value={role}
-                      {...register("role", { required: "Please select a role" })}
-                      className="sr-only"
-                    />
-                    <div
-                      className={`p-2 sm:p-3 rounded-lg border text-center cursor-pointer transition-colors text-xs sm:text-sm md:text-base
-                        ${
-                          selectedRole === role
-                            ? "border-primary-500 bg-primary-500/20 shadow-lg"
-                            : "border-gray-600 hover:border-primary-500"
-                        }
-                        `}
-                    >
-                      <span className="text-white capitalize">{role}</span>
-                    </div>
-                  </label>
-                ))}
-              </div>
-              {errors.role && <p className="mt-1 text-xs sm:text-sm text-red-400">{errors.role.message}</p>}
             </div>
 
             {/* Email */}
@@ -279,7 +254,10 @@ const RegisterPage = () => {
           <div className="mt-3 sm:mt-4 md:mt-6 text-center">
             <p className="text-gray-400 text-xs sm:text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="text-primary-400 hover:text-primary-300 transition-colors">
+              <Link
+                to={`/login${redirect ? `?redirect=${redirect}` : ""}`}
+                className="text-primary-400 hover:text-primary-300 transition-colors"
+              >
                 Sign in
               </Link>
             </p>

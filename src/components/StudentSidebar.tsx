@@ -3,6 +3,7 @@
 import type React from "react"
 import { Users, Trophy, History, User, Award, Settings, Bell, Home, LogOut, Link } from "lucide-react"
 import { useAuth } from "../contexts/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 interface StudentSidebarProps {
   activeSection: string
@@ -14,6 +15,7 @@ interface StudentSidebarProps {
 
 const StudentSidebar: React.FC<StudentSidebarProps> = ({ activeSection, onSectionChange, isOpen, onClose }) => {
   const { logout } = useAuth()
+  const navigate = useNavigate() // Add this line
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: Home },
@@ -31,6 +33,11 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ activeSection, onSectio
     if (window.innerWidth < 768) {
       onClose()
     }
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate("/") // Redirect to home page after logout
   }
 
   return (
@@ -96,7 +103,7 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ activeSection, onSectio
           {/* Footer */}
           <div className="p-4 border-t border-white/10">
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group text-red-400 hover:bg-red-500/10 hover:text-red-300"
             >
               <LogOut className="w-5 h-5 transition-transform group-hover:scale-110" />
