@@ -20,6 +20,9 @@ import Settings from './pages/Settings';
 import HomePage from './pages/HomePage';
 import CreateManualPoll from './pages/CreateManualPoll';
 import CreatePollPage from './pages/CreatePollPage';
+import JoinPollPage from './components/student/JoinPollPage';
+import AchievementPage from './components/student/AchievementPage';
+import PollQuestionsPage from './components/student/PollQuestionsPage';
 
 function App() {
   return (
@@ -89,6 +92,10 @@ function App() {
                     <StudentDashboard />
                   </AuthGuard>
                 } />
+                <Route path="/student/dashboard" element={<StudentDashboard />} />
+        <Route path="/student/join-poll" element={<JoinPollPage />} />
+        <Route path="/student/achievements" element={<AchievementPage />} />
+        <Route path="/student/poll-questions" element={<PollQuestionsPage meetingLink="" />} />
                 <Route path="/" element={<LoginPage />} />
               </Routes>
             </div>
