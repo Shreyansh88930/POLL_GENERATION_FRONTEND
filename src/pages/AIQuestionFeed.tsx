@@ -9,6 +9,7 @@ import AIControlPanel from "../components/AIControlPanel"
 
 const AIQuestionFeed = () => {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [questionsPerPoll, setQuestionsPerPoll] = useState(5); // Default value, update as needed
 
   useEffect(() => {
     const handleScroll = () => {
@@ -303,6 +304,11 @@ const AIQuestionFeed = () => {
 {/* Question Queue */}
     <GlassCard className="p-6">
       <h3 className="text-xl font-bold text-white mb-6">Question Queue</h3>
+      <div className="mb-4">
+    <span className="text-primary-400 font-semibold text-lg">
+      Questions Per Poll: {questionsPerPoll}
+    </span>
+  </div>
       <div className="space-y-4">
         <AnimatePresence>
           {filteredQuestions.map((question, index) => (
@@ -426,6 +432,8 @@ const AIQuestionFeed = () => {
     isOpen={isControlPanelOpen}
     onToggle={() => setIsControlPanelOpen(!isControlPanelOpen)}
     showFloatingButton={isScrolled}
+    setQuestionsPerPoll={setQuestionsPerPoll} 
+    questionsPerPoll={questionsPerPoll}
   />
 </DashboardLayout>
   )
