@@ -1,265 +1,241 @@
-"use client"
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Hash, Users, Clock, User, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import PollQuestionsPage from './PollQuestionsPage';
 
-import type React from "react"
+const JoinPollPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [roomCode, setRoomCode] = useState('');
+  const [isValidating, setIsValidating] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
+  const [roomInfo, setRoomInfo] = useState<any>(null);
+  const [error, setError] = useState('');
+  const [joinStatus, setJoinStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Link, Users, Zap, CheckCircle, AlertCircle, Loader2, Video, Globe, Calendar } from "lucide-react"
-import GlassCard from "../GlassCard"
+  // Format room code as user types (ABC-123 format)
+  const formatRoomCode = (value: string) => {
+    const cleaned = value.replace(/[^A-Z0-9]/g, '').toUpperCase();
+    if (cleaned.length <= 3) return cleaned;
+    return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}`;
+  };
 
-interface JoinPollPageProps {
-  onJoinPoll?: (meetingLink: string) => void
-}
+  const handleRoomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatRoomCode(e.target.value);
+    setRoomCode(formatted);
+    setError('');
+    setRoomInfo(null);
+    setJoinStatus('idle');
 
-const JoinPollPage: React.FC<JoinPollPageProps> = ({ onJoinPoll }) => {
-  const [meetingLink, setMeetingLink] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState(false)
-
-  const validateMeetingLink = (link: string): boolean => {
-    if (!link.trim()) return false
-
-    // Basic URL validation for common meeting platforms
-    const meetingPatterns = [
-      /^https?:\/\/.*\.zoom\.us\/j\/\d+/,
-      /^https?:\/\/meet\.google\.com\/[a-z-]+/,
-      /^https?:\/\/.*\.webex\.com\/meet\/[a-zA-Z0-9-]+/,
-      /^https?:\/\/teams\.microsoft\.com\/l\/meetup-join/,
-      /^https?:\/\/.*\.gotomeeting\.com\/join\/\d+/,
-    ]
-
-    return meetingPatterns.some((pattern) => pattern.test(link)) || link.includes("meet") || link.includes("zoom")
-  }
-
-  const handleJoinPoll = async () => {
-    setError("")
-
-    if (!meetingLink.trim()) {
-      setError("Please enter a meeting link")
-      return
+    // Validate room code when complete
+    if (formatted.length === 7) {
+      validateRoomCode(formatted);
     }
+  };
 
-    if (!validateMeetingLink(meetingLink)) {
-      setError("Please enter a valid meeting link (Zoom, Google Meet, Teams, etc.)")
-      return
-    }
-
-    setIsLoading(true)
+  const validateRoomCode = async (code: string) => {
+    setIsValidating(true);
+    setError('');
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Simulate API call to validate room code
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      setSuccess(true)
+      // Mock room validation logic
+      const mockRooms = {
+        'ABC-123': {
+          title: 'Mathematics Quiz - Chapter 5',
+          host: 'Dr. Smith',
+          participants: 24,
+          timeRemaining: '45 minutes',
+          status: 'active'
+        },
+        'XYZ-789': {
+          title: 'History Discussion',
+          host: 'Prof. Johnson',
+          participants: 18,
+          timeRemaining: '12 minutes',
+          status: 'active'
+        },
+        'DEF-456': {
+          title: 'Science Lab Poll',
+          host: 'Dr. Brown',
+          participants: 0,
+          timeRemaining: 'Expired',
+          status: 'expired'
+        }
+      };
 
-      // Navigate to poll questions after success animation
-      setTimeout(() => {
-        onJoinPoll?.(meetingLink)
-      }, 1500)
+      const room = mockRooms[code as keyof typeof mockRooms];
+      
+      if (room) {
+        if (room.status === 'expired') {
+          setError('This room has expired. Please contact your instructor for a new room code.');
+        } else {
+          setRoomInfo(room);
+        }
+      } else {
+        setError('Invalid room code. Please check and try again.');
+      }
     } catch (err) {
-      setError("Failed to join poll session. Please try again.")
+      setError('Failed to validate room code. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsValidating(false);
     }
-  }
+  };
+
+  const handleJoinPoll = async () => {
+    if (!roomInfo) return;
+
+    setIsJoining(true);
+    try {
+      // Simulate joining the poll
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      setJoinStatus('success');
+      
+      // Redirect to poll questions page after showing success message
+      setTimeout(() => {
+        navigate('/student/poll-questions', { 
+          state: { 
+            roomCode, 
+            roomInfo,
+            pollTitle: roomInfo.title 
+          } 
+        });
+      }, 1500);
+      
+    } catch (err) {
+      setJoinStatus('error');
+      setError('Failed to join the poll. Please try again.');
+    } finally {
+      setIsJoining(false);
+    }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !isLoading) {
-      handleJoinPoll()
+    if (e.key === 'Enter' && roomInfo && !isJoining) {
+      handleJoinPoll();
     }
-  }
-
-  const platformIcons = [
-    { name: "Zoom", icon: Video, color: "from-blue-500 to-blue-600" },
-    { name: "Google Meet", icon: Globe, color: "from-green-500 to-green-600" },
-    { name: "Teams", icon: Users, color: "from-purple-500 to-purple-600" },
-    { name: "WebEx", icon: Calendar, color: "from-orange-500 to-orange-600" },
-  ]
+  };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center"
-      >
-        <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl mb-6">
-          <Link className="w-10 h-10 text-white" />
-        </div>
-        <h1 className="text-4xl font-bold text-white mb-4">Join a Poll Session</h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-          Enter your meeting link to connect and participate in live polls during your session
-        </p>
-      </motion.div>
-
-      {/* Supported Platforms */}
+    <>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-2xl w-full mx-auto p-4 sm:p-8"
       >
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 text-center">Supported Platforms</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {platformIcons.map((platform, index) => (
-              <motion.div
-                key={platform.name}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
-                className="flex flex-col items-center p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200"
-              >
-                <div
-                  className={`w-12 h-12 bg-gradient-to-r ${platform.color} rounded-xl flex items-center justify-center mb-2`}
-                >
-                  <platform.icon className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-sm text-gray-300 font-medium">{platform.name}</span>
-              </motion.div>
-            ))}
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4">
+            <Hash className="w-8 h-8 text-white" />
           </div>
-        </GlassCard>
-      </motion.div>
+          <h1 className="text-3xl font-bold text-white mb-2">Join Poll Session</h1>
+          <p className="text-gray-300">Enter your room code to join the live poll</p>
+        </div>
 
-      {/* Main Join Form */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-      >
-        <GlassCard className="p-8">
-          <div className="max-w-2xl mx-auto">
-            <div className="space-y-6">
-              {/* Input Section */}
-              <div className="space-y-4">
-                <label className="block text-lg font-semibold text-white">Meeting Link</label>
+ {/* Instructions */}
+  <div className="mb-8">
+    <div className="bg-gradient-to-r from-purple-700/40 to-blue-700/40 border border-purple-500/30 rounded-xl p-5 flex flex-col sm:flex-row items-center gap-4 shadow-lg">
+      <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600">
+        <CheckCircle className="w-7 h-7 text-white" />
+      </div>
+      <div>
+        <h2 className="text-lg font-semibold text-white mb-1">How to Join a Poll</h2>
+        <ul className="list-disc list-inside text-gray-300 text-sm space-y-1">
+          <li>Ask your instructor for the <span className="text-primary-400 font-semibold">Room Code</span>.</li>
+          <li>Type the code in the box below (e.g., <span className="font-mono text-blue-300">ABC-123</span>).</li>
+          <li>Wait for the poll details to appear, then click <span className="text-primary-400 font-semibold">Join Poll</span>.</li>
+          <li>If the code is invalid or expired, you’ll see a helpful message.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+        {/* Main Card */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
+          {joinStatus === "success" ? (
+            <div className="text-center py-8">
+              <CheckCircle className="w-10 h-10 text-green-500 mb-4 mx-auto" />
+              <h3 className="text-xl font-semibold text-white mb-2">Successfully Joined!</h3>
+              <p className="text-gray-400 mb-4">Redirecting to poll questions...</p>
+              <Loader2 className="w-5 h-5 animate-spin text-blue-400 mx-auto" />
+            </div>
+          ) : (
+            <>
+              {/* Room Code Input */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-white mb-2">
+                  Room Code
+                </label>
                 <div className="relative">
                   <input
-                    type="url"
-                    value={meetingLink}
-                    onChange={(e) => {
-                      setMeetingLink(e.target.value)
-                      setError("")
-                      setSuccess(false)
-                    }}
+                    type="text"
+                    value={roomCode}
+                    onChange={handleRoomCodeChange}
                     onKeyPress={handleKeyPress}
-                    placeholder="https://meet.google.com/abc-defg-hij or https://zoom.us/j/123456789"
-                    className="w-full px-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                    disabled={isLoading || success}
+                    placeholder="e.g. ABC-123"
+                    className="w-full px-4 py-3 pl-12 bg-white/5 text-white border border-white/10 rounded-lg focus:ring-2 focus:ring-primary-500/50 text-lg font-mono tracking-wider placeholder-gray-400"
+                    maxLength={7}
                   />
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                    <Link className="w-5 h-5 text-gray-400" />
-                  </div>
+                  <Hash className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  {isValidating && (
+                    <Loader2 className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 animate-spin text-blue-400" />
+                  )}
                 </div>
               </div>
 
               {/* Error Message */}
-              <AnimatePresence>
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center space-x-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg p-3"
-                  >
-                    <AlertCircle className="w-5 h-5" />
-                    <span>{error}</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {error && (
+                <div className="mb-6 flex items-center space-x-2 text-red-400 text-sm">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>{error}</span>
+                </div>
+              )}
 
-              {/* Success Message */}
-              <AnimatePresence>
-                {success && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="flex items-center space-x-2 text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg p-3"
-                  >
-                    <CheckCircle className="w-5 h-5" />
-                    <span>Successfully connected! Redirecting to poll questions...</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Room Info Preview */}
+              {roomInfo && (
+                <div className="mb-6 p-4 bg-white/5 border border-white/10 rounded-xl text-white space-y-2">
+                  <p><strong>Poll:</strong> {roomInfo.title}</p>
+                  <p><strong>Host:</strong> {roomInfo.host}</p>
+                  <p><strong>Participants:</strong> {roomInfo.participants}</p>
+                  <p><strong>Time Remaining:</strong> {roomInfo.timeRemaining}</p>
+                </div>
+              )}
 
               {/* Join Button */}
-              <motion.button
+              <button
                 onClick={handleJoinPoll}
-                disabled={isLoading || success}
-                whileHover={{ scale: success ? 1 : 1.02 }}
-                whileTap={{ scale: success ? 1 : 0.98 }}
-                className={`
-                  w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200
-                  ${
-                    success
-                      ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                      : isLoading
-                        ? "bg-gray-500/20 text-gray-400 border border-gray-500/30 cursor-not-allowed"
-                        : "bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:from-primary-600 hover:to-secondary-600 shadow-lg hover:shadow-xl"
-                  }
-                `}
+                disabled={!roomInfo || isJoining}
+                className={`w-full py-3 px-6 rounded-xl font-semibold text-lg transition-all duration-200 text-white ${
+                  roomInfo && !isJoining
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:brightness-110"
+                    : "bg-white/10 text-gray-400 cursor-not-allowed"
+                }`}
               >
-                {isLoading ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Connecting...</span>
-                  </div>
-                ) : success ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <CheckCircle className="w-5 h-5" />
-                    <span>Connected! Redirecting...</span>
+                {isJoining ? (
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" /> Joining...
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <Zap className="w-5 h-5" />
-                    <span>Join Poll Session</span>
-                  </div>
+                  "Join Poll"
                 )}
-              </motion.button>
-            </div>
-          </div>
-        </GlassCard>
-      </motion.div>
+              </button>
+            </>
+          )}
+        </div>
 
-      {/* Help Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-      >
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">How to Join</h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <span className="text-white font-bold">1</span>
-              </div>
-              <h4 className="font-semibold text-white mb-2">Copy Link</h4>
-              <p className="text-sm text-gray-400">Copy your meeting link from Zoom, Google Meet, or Teams</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <span className="text-white font-bold">2</span>
-              </div>
-              <h4 className="font-semibold text-white mb-2">Paste & Join</h4>
-              <p className="text-sm text-gray-400">Paste the link above and click "Join Poll Session"</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <span className="text-white font-bold">3</span>
-              </div>
-              <h4 className="font-semibold text-white mb-2">Start Polling</h4>
-              <p className="text-sm text-gray-400">Answer questions and compete with your classmates</p>
-            </div>
+        {/* Footer Tips */}
+        {joinStatus !== "success" && (
+          <div className="mt-6 text-sm text-gray-400 text-center">
+            Room codes are 6 characters long (e.g., ABC-123). Ask your instructor for the code.
           </div>
-        </GlassCard>
+        )}
       </motion.div>
-    </div>
-  )
+    </>
+  );
 }
 
 export default JoinPollPage
