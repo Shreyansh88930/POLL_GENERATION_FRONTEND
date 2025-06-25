@@ -78,7 +78,7 @@ const AudioCapture = () => {
   };
 
   return (
-     <DashboardLayout>
+    <DashboardLayout>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -92,13 +92,12 @@ const AudioCapture = () => {
             <p className="text-gray-400">Real-time audio recording and transcription</p>
           </div>
           <div className="flex items-center space-x-4">
-            <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-              isRecording 
-                ? isPaused 
-                  ? 'bg-yellow-500/20 text-yellow-400' 
+            <div className={`px-3 py-1 rounded-full text-sm font-medium ${isRecording
+                ? isPaused
+                  ? 'bg-yellow-500/20 text-yellow-400'
                   : 'bg-green-500/20 text-green-400'
                 : 'bg-gray-500/20 text-gray-400'
-            }`}>
+              }`}>
               {isRecording ? (isPaused ? 'Paused' : 'Recording') : 'Stopped'}
             </div>
           </div>
@@ -115,11 +114,10 @@ const AudioCapture = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={toggleRecording}
-                  className={`w-20 h-20 rounded-full flex items-center justify-center ${
-                    isRecording 
-                      ? 'bg-red-500 hover:bg-red-600' 
+                  className={`w-20 h-20 rounded-full flex items-center justify-center ${isRecording
+                      ? 'bg-red-500 hover:bg-red-600'
                       : 'bg-primary-500 hover:bg-primary-600'
-                  } transition-colors duration-200`}
+                    } transition-colors duration-200`}
                 >
                   {isRecording ? (
                     <MicOff className="w-8 h-8 text-white" />
@@ -128,7 +126,7 @@ const AudioCapture = () => {
                   )}
                 </motion.button>
               </div>
-              
+
               <div className="flex items-center justify-center space-x-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -143,7 +141,7 @@ const AudioCapture = () => {
                     <Pause className="w-4 h-4" />
                   )}
                 </motion.button>
-                
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -169,6 +167,10 @@ const AudioCapture = () => {
                   onChange={(e) => setSelectedMic(e.target.value)}
                   className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
+                  {/* System Speaker Option */}
+                  <option value="system-speaker" className="bg-gray-800">
+                    System Speaker
+                  </option>
                   {micDevices.map(device => (
                     <option key={device.id} value={device.id} className="bg-gray-800">
                       {device.name}
@@ -176,7 +178,7 @@ const AudioCapture = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Volume Level
@@ -247,7 +249,7 @@ const AudioCapture = () => {
           </div>
           <div className="bg-black/20 rounded-lg p-4 min-h-[200px] max-h-[400px] overflow-y-auto">
             {transcription ? (
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-gray-300 leading-relaxed"
@@ -257,8 +259,8 @@ const AudioCapture = () => {
             ) : (
               <div className="flex items-center justify-center h-full">
                 <p className="text-gray-500 text-center">
-                  {isRecording 
-                    ? 'Listening for speech...' 
+                  {isRecording
+                    ? 'Listening for speech...'
                     : 'Click the microphone to start recording'
                   }
                 </p>
