@@ -33,11 +33,11 @@ interface Question {
 }
 
 interface PollQuestionsPageProps {
-  meetingLink: string
+  roomCode: string
   onComplete?: () => void
 }
 
-const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ meetingLink, onComplete }) => {
+const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ roomCode, onComplete }) => {
   const [questions] = useState<Question[]>([
     {
       id: "1",
@@ -95,6 +95,7 @@ const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ meetingLink, onCo
   const isLastQuestion = currentQuestionIndex === questions.length - 1
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100
 
+  // --- useEffect: timer logic ---
   useEffect(() => {
     if (timeLeft > 0 && !isAnswered) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
@@ -102,8 +103,10 @@ const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ meetingLink, onCo
     } else if (timeLeft === 0 && !isAnswered) {
       handleTimeUp()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, isAnswered])
 
+  // --- handleTimeUp ---
   const handleTimeUp = () => {
     setIsAnswered(true)
     setShowResult(true)
@@ -113,6 +116,7 @@ const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ meetingLink, onCo
     }, 3000)
   }
 
+  // --- handleAnswerSelect ---
   const handleAnswerSelect = (answerIndex: number) => {
     if (isAnswered) return
 
@@ -136,6 +140,7 @@ const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ meetingLink, onCo
     }, 3000)
   }
 
+  // --- nextQuestion ---
   const nextQuestion = () => {
     if (isLastQuestion) {
       onComplete?.()
@@ -150,6 +155,7 @@ const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ meetingLink, onCo
     setAnsweredCount(0)
   }
 
+  // --- getDifficultyColor ---
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "Easy":
@@ -163,6 +169,7 @@ const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ meetingLink, onCo
     }
   }
 
+  // --- getTimerColor ---
   const getTimerColor = () => {
     if (timeLeft <= 5) return "text-red-400 animate-pulse"
     if (timeLeft <= 10) return "text-yellow-400"
@@ -178,7 +185,8 @@ const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ meetingLink, onCo
           <span className="text-green-400 font-medium">Live Session Active</span>
         </div>
         <h1 className="text-3xl font-bold text-white mb-2">Interactive Poll</h1>
-        <p className="text-gray-400 truncate max-w-md mx-auto">{meetingLink}</p>
+        {/* Show the room code here */}
+        <p className="text-gray-400 truncate max-w-md mx-auto">{roomCode}</p>
       </motion.div>
 
       {/* Stats Bar */}
