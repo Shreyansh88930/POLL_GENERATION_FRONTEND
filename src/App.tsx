@@ -22,6 +22,7 @@ import CreateManualPoll from './pages/CreateManualPoll';
 import CreatePollPage from './pages/CreatePollPage';
 import ContactUs from './pages/ContactUs';
 
+
 // Student dashboard section imports
 import JoinPollPage from './components/student/JoinPollPage';
 import PollHistoryPage from './components/student/PollHistoryPage';
@@ -31,6 +32,7 @@ import AchievementPage from './components/student/AchievementPage';
 import NotificationPage from './components/student/NotificationPage';
 import SettingsStudent from './components/student/Settings';
 import StudentLeaderboard from './components/student/StudentLeaderboard';
+import DashboardHomePage from './components/student/DashboardHomePage';
 
 function App() {
   return (
@@ -78,35 +80,19 @@ function App() {
                     <Settings />
                 } />
 
-                {/* Student Dashboard Routes */}
-                <Route path="/student" element={
-                    <StudentDashboard />
-                } />
-                <Route path="/student/join-poll" element={
-                    <JoinPollPage />
-                } />
-                <Route path="/student/history" element={
-                    <PollHistoryPage />
-                } />
-                <Route path="/student/poll-questions" element={
-                    <PollQuestionsPage />
-                } />
-                <Route path="/student/profile" element={
-                    <StudentProfilePage />
-                } />
-                <Route path="/student/achievements" element={
-                    <AchievementPage />
-                } />
-                <Route path="/student/notifications" element={
-                    <NotificationPage />
-                } />
-                <Route path="/student/settings" element={
-                    <SettingsStudent />
-                } />
-                <Route path="/student/leaderboard" element={
-                    <StudentLeaderboard />
-                } />
-              </Routes>
+      {/* Student Dashboard Routes */}
+      <Route path="/student/*" element={<StudentDashboard />}>
+        <Route index element={<DashboardHomePage />} />
+        <Route path="join-poll" element={<JoinPollPage />} />
+        <Route path="history" element={<PollHistoryPage />} />
+        <Route path="poll-questions" element={<PollQuestionsPage roomCode="" />} />
+        <Route path="profile" element={<StudentProfilePage />} />
+        <Route path="achievements" element={<AchievementPage />} />
+        <Route path="notifications" element={<NotificationPage />} />
+        <Route path="settings" element={<SettingsStudent />} />
+        <Route path="leaderboard" element={<StudentLeaderboard />} />
+      </Route>
+    </Routes>
             </div>
           </Router>
         </LoadingProvider>
