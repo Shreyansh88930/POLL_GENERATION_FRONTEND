@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Users, 
+  UserIcon,
+  MailIcon,
+  XIcon, 
   Search, 
   Filter, 
   Download, 
@@ -19,6 +21,20 @@ const Participants = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('accuracy');
   const [selectedParticipant, setSelectedParticipant] = useState<number | null>(null);
+
+  // --- Dummy students currently joining the poll ---
+  const [joiningStudents, setJoiningStudents] = useState([
+    { id: 101, name: 'Priya Sharma', email: 'priya.sharma@student.edu' },
+    { id: 102, name: 'Rahul Verma', email: 'rahul.verma@student.edu' },
+    { id: 103, name: 'Sara Lee', email: 'sara.lee@student.edu' },
+    { id: 104, name: 'Mohit Singh', email: 'mohit.singh@student.edu' },
+    { id: 105, name: 'Emily Chen', email: 'emily.chen@student.edu' },
+  ]);
+
+  const handleRemoveStudent = (id: number) => {
+    setJoiningStudents(prev => prev.filter(student => student.id !== id));
+  };
+
 
   // Mock participants data
   const participants = [
@@ -129,6 +145,60 @@ const Participants = () => {
         transition={{ duration: 0.5 }}
         className="space-y-6 overflow-x-hidden"
       >
+
+         {/* --- Students Joining Current Poll Section --- */}
+        <GlassCard className="p-6 mb-2">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <UserIcon className="w-6 h-6 text-primary-400" />
+              <h2 className="text-xl font-bold text-white">Students Joining This Poll</h2>
+              <span className="bg-primary-500/20 text-primary-400 px-3 py-1 rounded-full text-xs font-medium">
+                {joiningStudents.length} Joined
+              </span>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {joiningStudents.length === 0 ? (
+              <div className="col-span-full text-center text-gray-400 py-6">
+                No students are currently joining this poll.
+              </div>
+            ) : (
+              joiningStudents.map((student, idx) => (
+                <motion.div
+                  key={student.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="flex items-center justify-between bg-white/5 border border-white/10 rounded-lg px-4 py-3 shadow hover:bg-primary-500/10 transition-all"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-lg">
+                      {student.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                    <div>
+                      <div className="flex items-center space-x-1">
+                        <UserIcon className="w-4 h-4 text-primary-400" />
+                        <span className="text-white font-medium">{student.name}</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <MailIcon className="w-4 h-4 text-gray-400" />
+                        <span className="text-gray-300 text-xs">{student.email}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleRemoveStudent(student.id)}
+                    className="ml-4 p-2 rounded-full bg-red-500/20 hover:bg-red-500/40 transition-colors"
+                    title="Remove from poll"
+                  >
+                    <XIcon className="w-4 h-4 text-red-400" />
+                  </button>
+                </motion.div>
+              ))
+            )}
+          </div>
+        </GlassCard>
+        
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
