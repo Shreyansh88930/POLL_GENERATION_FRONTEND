@@ -149,7 +149,7 @@ const CreatePollPage: React.FC = () => {
     setTimeRemaining((prev) => prev + hours * 60 * 60)
   }
 
-  
+
 
 
 
@@ -388,8 +388,8 @@ const CreatePollPage: React.FC = () => {
                       onClick={handleRegenerateCode}
                       disabled={isPollActive}
                       className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${isPollActive
-                          ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:shadow-lg"
+                        ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:shadow-lg"
                         }`}
                     >
                       <RefreshCw
@@ -410,8 +410,8 @@ const CreatePollPage: React.FC = () => {
                           onClick={handleDestroyRoom}
                           disabled={isDestroying}
                           className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${isDestroying
-                              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                              : "bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-lg"
+                            ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                            : "bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-lg"
                             }`}
                         >
                           {isDestroying ? (
@@ -444,10 +444,10 @@ const CreatePollPage: React.FC = () => {
                     onClick={handleCreatePoll}
                     disabled={isPollActive || isLoading}
                     className={`w-full px-6 py-4 rounded-lg font-semibold text-lg transition-all duration-200 ${isPollActive
-                        ? "bg-green-600 text-white cursor-default"
-                        : isLoading
-                          ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl"
+                      ? "bg-green-600 text-white cursor-default"
+                      : isLoading
+                        ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl"
                       }`}
                   >
                     {isLoading ? (
@@ -495,10 +495,10 @@ const CreatePollPage: React.FC = () => {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${isDragOver
-                        ? "border-primary-500/50 bg-primary-500/10"
-                        : errors.csv
-                          ? "border-red-500/50 bg-red-500/5"
-                          : "border-white/20 hover:border-white/30"
+                      ? "border-primary-500/50 bg-primary-500/10"
+                      : errors.csv
+                        ? "border-red-500/50 bg-red-500/5"
+                        : "border-white/20 hover:border-white/30"
                       }`}
                   >
                     <input
@@ -582,10 +582,10 @@ const CreatePollPage: React.FC = () => {
                         onClick={handleSendInvites}
                         disabled={invitesSent || isSendingInvites}
                         className={`w-full px-6 py-4 rounded-lg font-semibold text-lg transition-all duration-200 ${invitesSent
-                            ? "bg-green-600 text-white cursor-default"
-                            : isSendingInvites
-                              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                              : "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg hover:shadow-xl"
+                          ? "bg-green-600 text-white cursor-default"
+                          : isSendingInvites
+                            ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                            : "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg hover:shadow-xl"
                           }`}
                       >
                         {isSendingInvites ? (
@@ -651,6 +651,15 @@ const CreatePollPage: React.FC = () => {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
+                          onClick={() => setTimeRemaining(prev => prev + 30 * 60)} // 30 mins in seconds
+                          className="flex items-center justify-center space-x-1 px-3 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg text-sm hover:shadow-lg transition-all duration-200"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>30 mins</span>
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                           onClick={() => handleExtendTime(1)}
                           className="flex items-center justify-center space-x-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg text-sm hover:shadow-lg transition-all duration-200"
                         >
@@ -674,15 +683,6 @@ const CreatePollPage: React.FC = () => {
                         >
                           <Plus className="w-3 h-3" />
                           <span>3 Hours</span>
-                        </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleExtendTime(6)}
-                          className="flex items-center justify-center space-x-1 px-3 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg text-sm hover:shadow-lg transition-all duration-200"
-                        >
-                          <Plus className="w-3 h-3" />
-                          <span>6 Hours</span>
                         </motion.button>
                       </div>
                     </div>
