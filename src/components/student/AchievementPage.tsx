@@ -386,11 +386,11 @@ const AchievementPage = () => {
             onChange={(e) => setSelectedRarity(e.target.value)}
             className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            <option value="all">All Rarities</option>
-            <option value="legendary">Legendary</option>
-            <option value="epic">Epic</option>
-            <option value="rare">Rare</option>
-            <option value="common">Common</option>
+            <option value="all" className="bg-gray-800">All Rarities</option>
+            <option value="legendary" className="bg-gray-800">Legendary</option>
+            <option value="epic" className="bg-gray-800">Epic</option>
+            <option value="rare" className="bg-gray-800">Rare</option>
+            <option value="common" className="bg-gray-800">Common</option>
           </select>
         </div>
       </GlassCard>
