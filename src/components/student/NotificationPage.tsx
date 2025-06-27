@@ -1,9 +1,11 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Bell, Check, X, Search, Trophy, Users, Settings, Clock, Star, Zap, Filter } from "lucide-react"
 import GlassCard from "../GlassCard"
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 interface Notification {
   id: string
@@ -22,67 +24,16 @@ interface Notification {
 }
 
 const NotificationPage: React.FC = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      type: "achievement",
-      title: "New Achievement Unlocked! 🏆",
-      message: 'Congratulations! You\'ve earned the "Quiz Master" badge for answering 50 questions correctly.',
-      timestamp: new Date(Date.now() - 1000 * 60 * 30),
-      isRead: false,
-      priority: "high",
-      metadata: { achievementType: "Quiz Master", points: 100 },
-    },
-    {
-      id: "2",
-      type: "poll",
-      title: "New Poll Available",
-      message: 'Your instructor has created a new poll: "Understanding React Hooks". Join now to participate!',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-      isRead: false,
-      priority: "medium",
-      actionUrl: "/student/join-poll",
-      metadata: { pollId: "poll-123" },
-    },
-    {
-      id: "3",
-      type: "social",
-      title: "Leaderboard Update",
-      message: "You've moved up to 3rd place on the class leaderboard! Keep up the great work!",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4),
-      isRead: true,
-      priority: "medium",
-    },
-    {
-      id: "4",
-      type: "system",
-      title: "System Maintenance",
-      message:
-        "Scheduled maintenance will occur tonight from 2:00 AM to 4:00 AM EST. Some features may be temporarily unavailable.",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6),
-      isRead: true,
-      priority: "low",
-    },
-    {
-      id: "5",
-      type: "reminder",
-      title: "Poll Reminder",
-      message: 'Don\'t forget to complete the "JavaScript Fundamentals" poll. It closes in 2 hours!',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8),
-      isRead: false,
-      priority: "high",
-    },
-    {
-      id: "6",
-      type: "achievement",
-      title: "Streak Achievement! 🔥",
-      message: "Amazing! You've maintained a 7-day participation streak. You're on fire!",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 12),
-      isRead: true,
-      priority: "medium",
-      metadata: { achievementType: "Streak Master", points: 75 },
-    },
-  ])
+  const [notifications, setNotifications] = useState<Notification[]>([])
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    fetch(`${API_URL}/users/notifications`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then(setNotifications)
+  }, [])
 
   const [filter, setFilter] = useState<"all" | "unread" | "achievement" | "poll" | "system" | "social" | "reminder">(
     "all",
@@ -197,10 +148,12 @@ const NotificationPage: React.FC = () => {
 
             {/* Filter Buttons */}
             <div className="flex flex-wrap gap-2">
-              {["all", "unread", "achievement", "poll"].map((filterType) => (
+              {(["all", "unread", "achievement", "poll"] as Array<
+                "all" | "unread" | "achievement" | "poll"
+              >).map((filterType) => (
                 <button
                   key={filterType}
-                  onClick={() => setFilter(filterType as any)}
+                  onClick={() => setFilter(filterType)}
                   className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ${
                     filter === filterType ? "bg-purple-600 text-white" : "bg-white/10 text-gray-300 hover:bg-white/20"
                   }`}

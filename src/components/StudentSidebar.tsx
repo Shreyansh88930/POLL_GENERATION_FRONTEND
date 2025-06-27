@@ -2,8 +2,8 @@
 
 import type React from "react"
 import { Users, Trophy, History, User, Award, Settings, Bell, Home, LogOut, Link } from "lucide-react"
-import { useAuth } from "../contexts/AuthContext"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface StudentSidebarProps {
   isOpen: boolean
@@ -13,7 +13,6 @@ interface StudentSidebarProps {
 const StudentSidebar: React.FC<StudentSidebarProps> = ({ isOpen, onClose }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const menuItems = [
     { id: "", label: "Dashboard", icon: Home },
@@ -40,7 +39,7 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ isOpen, onClose }) => {
   };
 
   const handleLogout = () => {
-    logout();
+    logout(); // This clears JWT and user state
     navigate("/");
   };
 

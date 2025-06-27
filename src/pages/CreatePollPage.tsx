@@ -30,6 +30,8 @@ interface StudentInvite {
 
 const POLL_STORAGE_KEY = "activePollSession";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const CreatePollPage: React.FC = () => {
   const [roomCode, setRoomCode] = useState("")
   const [csvFile, setCsvFile] = useState<File | null>(null)
@@ -129,7 +131,7 @@ const CreatePollPage: React.FC = () => {
 
   // Timer effect
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: ReturnType<typeof setInterval>
     if (isPollActive && timeRemaining > 0) {
       interval = setInterval(() => {
         setTimeRemaining((prev) => {
@@ -148,10 +150,6 @@ const CreatePollPage: React.FC = () => {
   const handleExtendTime = (hours: number) => {
     setTimeRemaining((prev) => prev + hours * 60 * 60)
   }
-
-
-
-
 
   // Parse CSV content
   const parseCSV = (content: string): StudentInvite[] => {
@@ -295,18 +293,39 @@ const CreatePollPage: React.FC = () => {
   }
 
   // Handle create poll
-  const handleCreatePoll = () => {
+  const handleCreatePoll = async () => {
     if (!roomName.trim()) {
       setRoomNameError("Room Name is required.");
       return;
     }
     setRoomNameError(""); // Clear error if valid
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/polls`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          roomCode,
+          roomName,
+          timeRemaining,
+          isPollActive: true,
+        }),
+      });
+      if (!res.ok) throw new Error("Poll creation failed");
       setIsPollActive(true);
       console.log("Poll created with room code:", roomCode);
-    }, 2000);
+    } catch (error) {
+      setErrors((prev) => ({
+        ...prev,
+        csv: error instanceof Error ? error.message : "Failed to create the poll",
+      }))
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

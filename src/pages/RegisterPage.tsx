@@ -5,7 +5,7 @@ import { Link, useNavigate, useLocation  } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useForm } from "react-hook-form"
 import { Mail, Lock, Eye, EyeOff, Brain, Loader, User } from "lucide-react"
-import { useAuth, validatePassword } from "../contexts/AuthContext"
+import { useAuth } from "../contexts/AuthContext"
 import GlassCard from "../components/GlassCard"
 
 interface RegisterForm {
@@ -15,12 +15,31 @@ interface RegisterForm {
   confirmPassword: string
 }
 
+function validatePassword(password: string) {
+  if (password.length < 8) {
+    throw new Error("Password must be at least 8 characters long");
+  }
+  if (!/[A-Z]/.test(password)) {
+    throw new Error("Password must contain at least one uppercase letter");
+  }
+  if (!/[a-z]/.test(password)) {
+    throw new Error("Password must contain at least one lowercase letter");
+  }
+  if (!/\d/.test(password)) {
+    throw new Error("Password must contain at least one number");
+  }
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    throw new Error("Password must contain at least one special character");
+  }
+  return true;
+}
+
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [registerError, setRegisterError] = useState<string | null>(null)
-  const { register: registerUser } = useAuth()
+  const [registerError, setRegisterError] = useState<string | null>(null);
+  const { register: registerUser } = useAuth();
   const navigate = useNavigate()
   const location = useLocation()
   const params = new URLSearchParams(location.search)
@@ -48,10 +67,10 @@ const RegisterPage = () => {
   }
 
   const onSubmit = async (data: RegisterForm) => {
-    setIsLoading(true)
-    setRegisterError(null)
+    setIsLoading(true);
+    setRegisterError(null);
     try {
-      await registerUser(data.fullName, data.email, data.password)
+      await registerUser(data.fullName, data.email, data.password);
       if (redirect === "create-poll" || redirect === "join-poll") {
         navigate(`/login?redirect=${redirect}`)
       } else {
@@ -59,14 +78,12 @@ const RegisterPage = () => {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setRegisterError(error.message || "Registration failed")
-        console.error("Registration failed:", error)
+        setRegisterError(error.message);
       } else {
-        setRegisterError("Registration failed")
-        console.error("Registration failed:", error)
+        setRegisterError("An unknown error occurred.");
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 

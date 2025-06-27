@@ -14,14 +14,18 @@ interface LoginForm {
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // State to hold any login error message from the backend
+  const [loginError, setLoginError] = useState<string | null>(null); // New state variable
+
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>();
   const params = new URLSearchParams(location.search);
   const redirect = params.get("redirect");
-  
+
   const onSubmit = async (data: LoginForm) => {
+    setLoginError(null); // Clear any previous login errors before a new attempt
     setIsLoading(true);
     try {
       await login(data.email, data.password);
@@ -32,9 +36,15 @@ const LoginPage = () => {
       } else {
         navigate('/host');
       }
-    } catch (error) {
-      console.error('Login failed:', error);
-    } finally {
+        } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Login failed:', error);
+        // Set the login error message to be displayed
+        setLoginError(error.message || 'An unexpected error occurred. Please try again.');
+      } else {
+        console.error('Unknown error:', error);
+      }
+    }finally {
       setIsLoading(false);
     }
   };
@@ -71,14 +81,15 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                 Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type="email"
-                  {...register('email', { 
+                  id="email"
+                  {...register('email', {
                     required: 'Email is required',
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -96,14 +107,15 @@ const LoginPage = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  {...register('password', { 
+                  id="password"
+                  {...register('password', {
                     required: 'Password is required',
                     minLength: {
                       value: 6,
@@ -117,6 +129,7 @@ const LoginPage = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </button>
@@ -125,6 +138,13 @@ const LoginPage = () => {
                 <p className="mt-1 text-sm text-red-400">{errors.password.message}</p>
               )}
             </div>
+
+            {/* Display the login error message from the backend */}
+            {loginError && (
+              <p className="mt-2 text-sm text-red-400 text-center font-medium">
+                {loginError}
+              </p>
+            )}
 
             {/* Submit Button */}
             <motion.button

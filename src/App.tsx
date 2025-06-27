@@ -21,7 +21,7 @@ import HomePage from './pages/HomePage';
 import CreateManualPoll from './pages/CreateManualPoll';
 import CreatePollPage from './pages/CreatePollPage';
 import ContactUs from './pages/ContactUs';
-
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 // Student dashboard section imports
 import JoinPollPage from './components/student/JoinPollPage';
@@ -48,6 +48,7 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/contactUs" element={<ContactUs />} />
+                <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
                 {/* Host Dashboard Routes */}
                 <Route path="/host" element={
                     <HostDashboard />

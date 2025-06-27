@@ -21,6 +21,9 @@ import {
 } from "lucide-react"
 import GlassCard from "../GlassCard"
 
+// Define your API URL here or import from your config
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"
+
 interface Question {
   id: string
   question: string
@@ -38,7 +41,7 @@ interface PollQuestionsPageProps {
 }
 
 const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ roomCode, onComplete }) => {
-  const [questions] = useState<Question[]>([
+  const [questions, setQuestions] = useState<Question[]>([
     {
       id: "1",
       question: "Which programming language is known as the 'language of the web'?",
@@ -105,6 +108,16 @@ const PollQuestionsPage: React.FC<PollQuestionsPageProps> = ({ roomCode, onCompl
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, isAnswered])
+
+  // --- useEffect: fetch questions ---
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    fetch(`${API_URL}/polls/${roomCode}/questions`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then(setQuestions)
+  }, [roomCode])
 
   // --- handleTimeUp ---
   const handleTimeUp = () => {

@@ -18,17 +18,18 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Sidebar = () => {
   const { logout } = useAuth();
-  const location = useLocation();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout(); // This clears JWT and user state
+    navigate('/'); 
+  };
+
+  const location = useLocation();
   const [open, setOpen] = useState(false);
 
   const navRef = useRef<HTMLDivElement>(null);
   const activeItemRef = useRef<HTMLDivElement>(null);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/'); 
-  };
 
   useEffect(() => {
     if (activeItemRef.current && navRef.current) {

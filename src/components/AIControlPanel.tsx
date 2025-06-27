@@ -11,6 +11,8 @@ import QuestionQuantitySlider from "./controls/QuestionQuantitySlider"
 import QuestionTypeSelector from "./controls/QuestionTypeSelector"
 import ContextRangeSelector from "./controls/ContextRangeSelector"
 
+// Define API_URL from environment or set a default
+
 interface AIControlPanelProps {
   isOpen: boolean
   onToggle: () => void
@@ -61,6 +63,7 @@ const AIControlPanel: React.FC<AIControlPanelProps> = ({ isOpen, onToggle, showF
     })
     setHasUnsavedChanges(false)
   }
+
 
   return (
     <>
@@ -218,3 +221,4 @@ const AIControlPanel: React.FC<AIControlPanelProps> = ({ isOpen, onToggle, showF
 }
 
 export default AIControlPanel
+

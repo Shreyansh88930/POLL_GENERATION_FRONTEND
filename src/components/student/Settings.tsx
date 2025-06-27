@@ -80,12 +80,19 @@ const Settings: React.FC = () => {
     { id: "security", label: "Security", icon: Lock },
   ]
 
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
   const handleSave = async () => {
-    setIsSaving(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsSaving(false)
-    // Show success message (you can implement toast notifications)
+    setIsSaving(true);
+    const token = localStorage.getItem("token");
+    await fetch(`${API_URL}/users/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(profileData),
+    });
+    setIsSaving(false);
   }
 
   const renderProfileSettings = () => (

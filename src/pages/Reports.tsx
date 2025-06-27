@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FileText, 
   Download, 
   Calendar, 
-  Filter,
   BarChart3,
   PieChart,
   TrendingUp,
@@ -16,9 +15,18 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import DashboardLayout from '../components/DashboardLayout';
 import GlassCard from '../components/GlassCard';
 
+const API_URL = 'https://api.example.com'; // Replace with your API URL
+
 const Reports = () => {
   const [dateRange, setDateRange] = useState('7days');
   const [reportType, setReportType] = useState('overview');
+  type Report = {
+    // Replace these fields with the actual structure of your report objects
+    id: string;
+    name: string;
+    [key: string]: unknown;
+  };
+  const [reports, setReports] = useState<Report[]>([]);
 
   // Mock data
   const performanceData = [
@@ -75,6 +83,15 @@ const Reports = () => {
       color: 'from-orange-500 to-red-600'
     }
   ];
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    fetch(`${API_URL}/reports`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.json())
+      .then(setReports);
+  }, []);
 
   const handleExportReport = (format: string) => {
     console.log(`Exporting ${reportType} report as ${format}`);

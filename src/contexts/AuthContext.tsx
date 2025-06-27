@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 interface User {
   id: string;
-  email: string;
   fullName: string;
+  email: string;
+  role: string;
 }
 
 interface AuthContextType {
@@ -12,8 +13,7 @@ interface AuthContextType {
   register: (fullName: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   forgotPassword: (email: string) => Promise<void>;
-  isAuthenticated: boolean;
-  isLoading: boolean;
+  resetPassword: (token: string, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,80 +23,91 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate checking for existing session
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    if (storedUser) setUser(JSON.parse(storedUser));
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const mockUser = {
-      id: '1',
-      email,
-      fullName: 'John Doe'
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem('user', JSON.stringify(mockUser));
-  };
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+const login = async (email: string, password: string) => {
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!res.ok) {
+    // Attempt to parse a more specific error message from the API response
+    // If your API sends back { message: "Invalid credentials" } for example
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Login failed"); // Use API message or a generic one
+  }
+
+  const data = await res.json();
+  setUser(data.user);
+  localStorage.setItem("user", JSON.stringify(data.user));
+  localStorage.setItem("token", data.token);
+};
 
   const register = async (fullName: string, email: string, password: string) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Use centralized password validation
-    validatePassword(password);
-    
-    const mockUser = {
-      id: '1',
-      email,
-      fullName
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem('user', JSON.stringify(mockUser));
+    const res = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullName, email, password }),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message || "Registration failed");
+    }
+    const data = await res.json();
+    setUser(data.user);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("token", data.token);
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
   const forgotPassword = async (email: string) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const res = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message || "Failed to send reset email");
+    }
+    // Optionally return message
+    return await res.json();
+  };
+
+  const resetPassword = async (token: string, password: string) => {
+    const res = await fetch(`${API_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to reset password");
+    }
+    return data;
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      login,
-      register,
-      logout,
-      forgotPassword,
-      isAuthenticated: !!user,
-      isLoading
-    }}>
-      {children}
+    <AuthContext.Provider value={{ user, login, register, logout, forgotPassword, resetPassword }}>
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
-};
-
-export function validatePassword(password: string) {
-  if (password.length < 6) throw new Error('Password must be at least 6 characters');
-  if (!/[a-zA-Z]/.test(password)) throw new Error('Password must contain at least one letter');
-  if (!/\d/.test(password)) throw new Error('Password must contain at least one number');
 }

@@ -3,9 +3,22 @@ import WelcomeSection from "./WelcomeSection";
 import QuickAccessCards from "./QuickAccessCards";
 import GlassCard from "../GlassCard";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const DashboardHomePage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    fetch(`${API_URL}/users/dashboard`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then(setDashboardData);
+  }, []);
 
   return (
     <motion.div
@@ -23,7 +36,7 @@ const DashboardHomePage = () => {
         </button>
       </div>
       <WelcomeSection />
-      <QuickAccessCards onSectionChange={(section: string) => { /* handle section change here */ }} />
+      <QuickAccessCards onSectionChange={() => { /* handle section change here */ }} />
       {/* Recent Activity */}
       <GlassCard className="p-6">
         <h3 className="text-xl font-bold text-white mb-4">Recent Activity</h3>
@@ -49,3 +62,9 @@ const DashboardHomePage = () => {
 };
 
 export default DashboardHomePage;
+const setDashboardData = (data: unknown) => {
+  // You can update state here when dashboard data is fetched.
+  // For now, just log the data for debugging.
+  console.log("Dashboard data:", data);
+};
+

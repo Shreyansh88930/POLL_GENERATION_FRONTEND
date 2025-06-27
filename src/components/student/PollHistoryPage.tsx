@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import {
   Trophy,
@@ -27,13 +27,21 @@ import {
 } from "lucide-react"
 import GlassCard from "../GlassCard"
 
+// Extend ImportMeta to include env with VITE_API_URL
+interface ImportMetaEnv {
+  readonly VITE_API_URL?: string
+}
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
+const API_URL: string = import.meta.env?.VITE_API_URL || ""
+
 const PollHistoryPage = () => {
   const [selectedFilter, setSelectedFilter] = useState("all")
   const [selectedSubject, setSelectedSubject] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
-
-  // Sample poll history data
-  const pollHistory = [
+  const [pollHistory, setPollHistory] = useState([
     {
       id: 1,
       title: "JavaScript Fundamentals Quiz",
@@ -142,7 +150,7 @@ const PollHistoryPage = () => {
       icon: Brain,
       color: "from-indigo-500 to-purple-600",
     },
-  ]
+  ])
 
   const subjects = ["all", "Programming", "History", "Mathematics", "Science", "Arts", "Psychology"]
   const filters = [
@@ -152,6 +160,15 @@ const PollHistoryPage = () => {
     { id: "completed", label: "Completed" },
     { id: "missed", label: "Missed" },
   ]
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    fetch(`${API_URL}/polls/history`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then(setPollHistory)
+  }, [])
 
   // Calculate statistics
   const completedPolls = pollHistory.filter((poll) => poll.status === "completed")

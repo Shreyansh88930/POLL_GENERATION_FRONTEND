@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import {
   Award,
@@ -21,10 +21,28 @@ import {
 } from "lucide-react"
 import GlassCard from "../GlassCard"
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const AchievementPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedRarity, setSelectedRarity] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
+  type Achievement = {
+    id: string | number
+    name: string
+    description: string
+    category: string
+    rarity: string
+    icon: React.ReactNode
+    points: number
+    earned: boolean
+    earnedDate?: string
+    requirements: string[]
+    progress?: number
+    maxProgress?: number
+  }
+  
+  const [achievements, setAchievements] = useState<Achievement[]>([])
 
   const achievementStats = [
     { label: "Total Earned", value: "24", icon: Trophy, color: "from-yellow-500 to-orange-500" },
@@ -42,221 +60,14 @@ const AchievementPage = () => {
     { id: "knowledge", label: "Knowledge", icon: Brain, count: 4 },
   ]
 
-  const achievements = [
-    {
-      id: 1,
-      name: "Speed Demon",
-      description: "Answer 10 questions in under 5 seconds each",
-      icon: "⚡",
-      rarity: "legendary",
-      category: "speed",
-      earned: true,
-      progress: 100,
-      maxProgress: 10,
-      points: 500,
-      earnedDate: "2024-01-15",
-      requirements: ["Answer 10 questions", "Each under 5 seconds", "In a single poll"],
-    },
-    {
-      id: 2,
-      name: "Perfect Scholar",
-      description: "Achieve 100% accuracy on 5 consecutive polls",
-      icon: "🎯",
-      rarity: "legendary",
-      category: "performance",
-      earned: true,
-      progress: 100,
-      maxProgress: 5,
-      points: 750,
-      earnedDate: "2024-01-10",
-      requirements: ["100% accuracy", "5 consecutive polls", "No wrong answers"],
-    },
-    {
-      id: 3,
-      name: "Knowledge Master",
-      description: "Score 90%+ in all subject categories",
-      icon: "🧠",
-      rarity: "legendary",
-      category: "knowledge",
-      earned: true,
-      progress: 100,
-      maxProgress: 6,
-      points: 1000,
-      earnedDate: "2024-01-05",
-      requirements: [
-        "90%+ in Math",
-        "90%+ in Science",
-        "90%+ in History",
-        "90%+ in Literature",
-        "90%+ in Programming",
-        "90%+ in General",
-      ],
-    },
-    {
-      id: 4,
-      name: "Streak Master",
-      description: "Maintain a 30-day participation streak",
-      icon: "🔥",
-      rarity: "epic",
-      category: "streak",
-      earned: true,
-      progress: 100,
-      maxProgress: 30,
-      points: 400,
-      earnedDate: "2024-01-20",
-      requirements: ["Participate daily", "30 consecutive days", "No missed days"],
-    },
-    {
-      id: 5,
-      name: "Early Bird",
-      description: "Join 15 polls within the first minute",
-      icon: "🌅",
-      rarity: "epic",
-      category: "participation",
-      earned: true,
-      progress: 100,
-      maxProgress: 15,
-      points: 300,
-      earnedDate: "2024-01-18",
-      requirements: ["Join within 60 seconds", "15 different polls", "Be among first participants"],
-    },
-    {
-      id: 6,
-      name: "Team Player",
-      description: "Help 20 classmates in study groups",
-      icon: "🤝",
-      rarity: "epic",
-      category: "participation",
-      earned: true,
-      progress: 100,
-      maxProgress: 20,
-      points: 250,
-      earnedDate: "2024-01-12",
-      requirements: ["Help classmates", "Study group participation", "20 different students"],
-    },
-    {
-      id: 7,
-      name: "Quick Learner",
-      description: "Improve accuracy by 20% in one week",
-      icon: "📈",
-      rarity: "epic",
-      category: "performance",
-      earned: true,
-      progress: 100,
-      maxProgress: 20,
-      points: 350,
-      earnedDate: "2024-01-08",
-      requirements: ["Track weekly progress", "20% improvement", "Minimum 10 polls"],
-    },
-    {
-      id: 8,
-      name: "Night Owl",
-      description: "Complete 10 polls after 10 PM",
-      icon: "🦉",
-      rarity: "rare",
-      category: "participation",
-      earned: true,
-      progress: 100,
-      maxProgress: 10,
-      points: 150,
-      earnedDate: "2024-01-14",
-      requirements: ["After 10 PM", "10 different polls", "Complete fully"],
-    },
-    {
-      id: 9,
-      name: "Comeback King",
-      description: "Win a poll after being in last place",
-      icon: "👑",
-      rarity: "epic",
-      category: "performance",
-      earned: true,
-      progress: 100,
-      maxProgress: 1,
-      points: 400,
-      earnedDate: "2024-01-16",
-      requirements: ["Start in last place", "Finish in 1st place", "Same poll session"],
-    },
-    {
-      id: 10,
-      name: "Consistency Champion",
-      description: "Score between 80-90% on 20 polls",
-      icon: "⚖️",
-      rarity: "rare",
-      category: "performance",
-      earned: true,
-      progress: 100,
-      maxProgress: 20,
-      points: 200,
-      earnedDate: "2024-01-11",
-      requirements: ["80-90% accuracy", "20 different polls", "Consistent performance"],
-    },
-    // Locked achievements
-    {
-      id: 11,
-      name: "Legendary Scholar",
-      description: "Achieve 95%+ accuracy on 10 consecutive polls",
-      icon: "🏆",
-      rarity: "legendary",
-      category: "performance",
-      earned: false,
-      progress: 7,
-      maxProgress: 10,
-      points: 1500,
-      requirements: ["95%+ accuracy", "10 consecutive polls", "No breaks in streak"],
-    },
-    {
-      id: 12,
-      name: "Lightning Fast",
-      description: "Answer 50 questions in under 3 seconds each",
-      icon: "⚡",
-      rarity: "epic",
-      category: "speed",
-      earned: false,
-      progress: 32,
-      maxProgress: 50,
-      points: 600,
-      requirements: ["Under 3 seconds", "50 questions total", "Across multiple polls"],
-    },
-    {
-      id: 13,
-      name: "Century Club",
-      description: "Participate in 100 different polls",
-      icon: "💯",
-      rarity: "epic",
-      category: "participation",
-      earned: false,
-      progress: 47,
-      maxProgress: 100,
-      points: 500,
-      requirements: ["100 unique polls", "Full participation", "Complete each poll"],
-    },
-    {
-      id: 14,
-      name: "Subject Specialist",
-      description: "Score 95%+ in any single subject 15 times",
-      icon: "🎓",
-      rarity: "rare",
-      category: "knowledge",
-      earned: false,
-      progress: 11,
-      maxProgress: 15,
-      points: 300,
-      requirements: ["95%+ accuracy", "Same subject", "15 different polls"],
-    },
-    {
-      id: 15,
-      name: "Marathon Runner",
-      description: "Maintain a 100-day participation streak",
-      icon: "🏃",
-      rarity: "legendary",
-      category: "streak",
-      earned: false,
-      progress: 45,
-      maxProgress: 100,
-      points: 2000,
-      requirements: ["Daily participation", "100 consecutive days", "No missed days"],
-    },
-  ]
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    fetch(`${API_URL}/users/achievements`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then(setAchievements)
+  }, [])
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -516,7 +327,7 @@ const AchievementPage = () => {
                       <motion.div
                         className={`h-2 rounded-full bg-gradient-to-r ${getRarityColor(achievement.rarity)}`}
                         initial={{ width: 0 }}
-                        animate={{ width: `${(achievement.progress / achievement.maxProgress) * 100}%` }}
+                        animate={{ width: `${((achievement.progress ?? 0) / (achievement.maxProgress ?? 1)) * 100}%` }}
                         transition={{ delay: index * 0.1 + 0.5, duration: 0.8 }}
                       />
                     </div>

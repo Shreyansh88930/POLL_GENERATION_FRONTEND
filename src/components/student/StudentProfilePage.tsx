@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import {
   User,
@@ -25,21 +25,40 @@ import {
   Shield,
 } from "lucide-react"
 import GlassCard from "../GlassCard"
+import { useAuth } from "../../contexts/AuthContext"
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api"
 
 const StudentProfilePage = () => {
+  const { user } = useAuth()
+  const [profileData, setProfileData] = useState<any>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [activeTab, setActiveTab] = useState("overview")
-  const [profileData, setProfileData] = useState({
-    name: "Alex Johnson",
-    email: "alex.johnson@student.edu",
-    phone: "+1 (555) 123-4567",
-    school: "Tech University",
-    grade: "Junior",
-    major: "Computer Science",
-    graduationYear: "2025",
-    location: "San Francisco, CA",
-    bio: "Passionate about technology and learning. Love participating in interactive polls and quizzes!",
-  })
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token")
+      const res = await fetch(`${API_URL}/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      setProfileData(data)
+    }
+    fetchProfile()
+  }, [])
+
+  const handleSave = async () => {
+    const token = localStorage.getItem("token")
+    await fetch(`${API_URL}/users/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(profileData),
+    })
+    setIsEditing(false)
+  }
 
   const stats = [
     { label: "Total Points", value: "2,847", icon: Star, color: "from-yellow-500 to-orange-500" },
@@ -72,11 +91,6 @@ const StudentProfilePage = () => {
     { subject: "History", score: 88, icon: "📜", color: "from-yellow-500 to-orange-500" },
     { subject: "Literature", score: 82, icon: "📖", color: "from-purple-500 to-indigo-500" },
   ]
-
-  const handleSave = () => {
-    setIsEditing(false)
-    // Here you would typically save to backend
-  }
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -130,24 +144,24 @@ const StudentProfilePage = () => {
           {/* Profile Info */}
           <div className="flex-1 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-              <h1 className="text-3xl font-bold text-white">{profileData.name}</h1>
+              <h1 className="text-3xl font-bold text-white">{profileData?.name}</h1>
               <div className="bg-gradient-to-r from-purple-500 to-pink-500 px-3 py-1 rounded-full">
                 <span className="text-white text-sm font-bold">Level 15</span>
               </div>
             </div>
-            <p className="text-gray-400 mb-4">{profileData.bio}</p>
+            <p className="text-gray-400 mb-4">{profileData?.bio}</p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-300">
               <div className="flex items-center gap-2">
                 <School className="w-4 h-4" />
-                <span>{profileData.school}</span>
+                <span>{profileData?.school}</span>
               </div>
               <div className="flex items-center gap-2">
                 <GraduationCap className="w-4 h-4" />
-                <span>{profileData.major}</span>
+                <span>{profileData?.major}</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                <span>{profileData.location}</span>
+                <span>{profileData?.location}</span>
               </div>
             </div>
           </div>
@@ -327,7 +341,7 @@ const StudentProfilePage = () => {
               <label className="block text-white font-medium mb-2">Full Name</label>
               <input
                 type="text"
-                value={profileData.name}
+                value={profileData?.name}
                 onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                 className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
@@ -336,7 +350,7 @@ const StudentProfilePage = () => {
               <label className="block text-white font-medium mb-2">Email</label>
               <input
                 type="email"
-                value={profileData.email}
+                value={profileData?.email}
                 onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                 className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
@@ -345,7 +359,7 @@ const StudentProfilePage = () => {
               <label className="block text-white font-medium mb-2">Phone</label>
               <input
                 type="tel"
-                value={profileData.phone}
+                value={profileData?.phone}
                 onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                 className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
@@ -354,7 +368,7 @@ const StudentProfilePage = () => {
               <label className="block text-white font-medium mb-2">School</label>
               <input
                 type="text"
-                value={profileData.school}
+                value={profileData?.school}
                 onChange={(e) => setProfileData({ ...profileData, school: e.target.value })}
                 className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
@@ -363,7 +377,7 @@ const StudentProfilePage = () => {
               <label className="block text-white font-medium mb-2">Major</label>
               <input
                 type="text"
-                value={profileData.major}
+                value={profileData?.major}
                 onChange={(e) => setProfileData({ ...profileData, major: e.target.value })}
                 className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
@@ -372,7 +386,7 @@ const StudentProfilePage = () => {
               <label className="block text-white font-medium mb-2">Location</label>
               <input
                 type="text"
-                value={profileData.location}
+                value={profileData?.location}
                 onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
                 className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
@@ -380,7 +394,7 @@ const StudentProfilePage = () => {
             <div className="md:col-span-2">
               <label className="block text-white font-medium mb-2">Bio</label>
               <textarea
-                value={profileData.bio}
+                value={profileData?.bio}
                 onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
                 rows={3}
                 className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"

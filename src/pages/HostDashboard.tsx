@@ -7,8 +7,10 @@ import DashboardLayout from '../components/DashboardLayout';
 import GlassCard from '../components/GlassCard';
 import OrbitalNavigation from '../components/OrbitalNavigation';
 
+
 const HostDashboard = () => {
   const navigate = useNavigate();
+  // const [polls, setPolls] = useState([]);
 
   // Mock data
   const participationData = [
@@ -90,6 +92,18 @@ const HostDashboard = () => {
       href: '/host/reports',
     },
   ];
+
+  // useEffect(() => {
+  //   const fetchDashboardData = async () => {
+  //     const token = localStorage.getItem("token");
+  //     const res = await fetch(`${API_URL}/polls`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     const data = await res.json();
+  //     setPolls(data);
+  //   };
+  //   fetchDashboardData();
+  // }, []);
 
   return (
     <>
@@ -224,7 +238,7 @@ const HostDashboard = () => {
             <GlassCard className="p-6">
               <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {quickActions.map((action, index) => (
+                {quickActions.map((action) => (
                   <motion.a
                     key={action.title}
                     href={action.href}

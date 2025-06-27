@@ -2,14 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Hash, Users, Clock, User, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import PollQuestionsPage from './PollQuestionsPage';
+
+// Define your API URL here or import it from your config
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+interface RoomInfo {
+  title: string;
+  host: string;
+  participants: number;
+  timeRemaining: string;
+}
 
 const JoinPollPage: React.FC = () => {
   const navigate = useNavigate();
   const [roomCode, setRoomCode] = useState('');
   const [isValidating, setIsValidating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
-  const [roomInfo, setRoomInfo] = useState<any>(null);
+  const [roomInfo, setRoomInfo] = useState<RoomInfo | null>(null);
   const [error, setError] = useState('');
   const [joinStatus, setJoinStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -36,52 +45,18 @@ const JoinPollPage: React.FC = () => {
   const validateRoomCode = async (code: string) => {
     setIsValidating(true);
     setError('');
-
     try {
-      // Simulate API call to validate room code
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Mock room validation logic
-      const mockRooms = {
-        'ABC-123': {
-          title: 'Mathematics Quiz - Chapter 5',
-          host: 'Dr. Smith',
-          participants: 24,
-          timeRemaining: '45 minutes',
-          status: 'active'
-        },
-        'XYZ-789': {
-          title: 'History Discussion',
-          host: 'Prof. Johnson',
-          participants: 18,
-          timeRemaining: '12 minutes',
-          status: 'active'
-        },
-        'DEF-456': {
-          title: 'Science Lab Poll',
-          host: 'Dr. Brown',
-          participants: 0,
-          timeRemaining: 'Expired',
-          status: 'expired'
-        }
-      };
-
-      const room = mockRooms[code as keyof typeof mockRooms];
-      
-      if (room) {
-        if (room.status === 'expired') {
-          setError('This room has expired. Please contact your instructor for a new room code.');
-        } else {
-          setRoomInfo(room);
-        }
-      } else {
-        setError('Invalid room code. Please check and try again.');
-      }
-    } catch (err) {
-      setError('Failed to validate room code. Please try again.');
-    } finally {
-      setIsValidating(false);
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/polls/${code}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Invalid room code");
+      const data = await res.json();
+      setRoomInfo(data);
+    } catch {
+      setError("Invalid room code");
     }
+    setIsValidating(false);
   };
 
   const handleJoinPoll = async () => {
@@ -105,7 +80,7 @@ const JoinPollPage: React.FC = () => {
         });
       }, 1500);
       
-    } catch (err) {
+    } catch {
       setJoinStatus('error');
       setError('Failed to join the poll. Please try again.');
     } finally {
