@@ -20,7 +20,7 @@ const LoginPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>();
   const params = new URLSearchParams(location.search);
   const redirect = params.get("redirect");
-  
+
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     try {
@@ -54,19 +54,25 @@ const LoginPage = () => {
         className="relative z-10 w-full max-w-sm sm:max-w-md"
       >
         <GlassCard className="p-6 sm:p-8">
-          {/* Logo */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-center mb-6 sm:mb-8"
-          >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-            </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white mb-2">Welcome Back</h1>
-            <p className="text-gray-400 text-sm sm:text-base">Sign in to your account</p>
-          </motion.div>
+  {/* Logo */}
+  <motion.div
+    initial={{ scale: 0 }}
+    animate={{ scale: 1 }}
+    transition={{ delay: 0.2 }}
+    className="text-center mb-6 sm:mb-8"
+  >
+    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+      <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+    </div>
+    <h1 className="text-xl sm:text-2xl font-bold text-white mb-2">Welcome Back</h1>
+    <p className="text-gray-400 text-sm sm:text-base">Sign in to your account</p>
+    {/* Beautiful lines for the user */}
+    <p className="mt-4 text-primary-300 text-sm sm:text-base italic font-medium">
+      Unlock a world of smart, interactive polling.<br />
+      Your next great session is just a sign-in away.<br />
+      Let’s make engagement effortless and fun!
+    </p>
+  </motion.div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Email */}
@@ -78,7 +84,7 @@ const LoginPage = () => {
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type="email"
-                  {...register('email', { 
+                  {...register('email', {
                     required: 'Email is required',
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -103,7 +109,7 @@ const LoginPage = () => {
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  {...register('password', { 
+                  {...register('password', {
                     required: 'Password is required',
                     minLength: {
                       value: 6,
@@ -144,6 +150,42 @@ const LoginPage = () => {
               )}
             </motion.button>
           </form>
+          {/* Social Login */}
+          <div className="mt-6">
+  <div className="flex items-center mb-4">
+    <div className="flex-grow border-t border-gray-700"></div>
+    <span className="mx-3 text-gray-400 text-xs">or sign in with</span>
+    <div className="flex-grow border-t border-gray-700"></div>
+  </div>
+  <div className="flex flex-col gap-3">
+    {/* Google Login - Backend OAuth endpoint needed */}
+    <a
+      href="/auth/google" // TODO: Replace with your backend Google OAuth endpoint
+      className="flex items-center justify-center gap-2 bg-white text-gray-800 font-semibold py-2 rounded-lg shadow hover:bg-gray-100 transition-all"
+    >
+      <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
+      Sign in with Google
+    </a>
+    {/* LinkedIn Login - Backend OAuth endpoint needed */}
+    <a
+      href="/auth/linkedin" // TODO: Replace with your backend LinkedIn OAuth endpoint
+      className="flex items-center justify-center gap-2 bg-[#0077b5] text-white font-semibold py-2 rounded-lg shadow hover:bg-[#005983] transition-all"
+    >
+      <img src="https://www.svgrepo.com/show/448234/linkedin.svg" alt="LinkedIn" className="w-5 h-5 bg-white rounded" />
+      Sign in with LinkedIn
+    </a>
+    {/* Add more providers as needed, e.g. GitHub, Facebook */}
+    {/* 
+    <a
+      href="/auth/github" // TODO: Replace with your backend GitHub OAuth endpoint
+      className="flex items-center justify-center gap-2 bg-gray-900 text-white font-semibold py-2 rounded-lg shadow hover:bg-gray-800 transition-all"
+    >
+      <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub" className="w-5 h-5 bg-white rounded" />
+      Sign in with GitHub
+    </a>
+    */}
+  </div>
+</div>
 
           {/* Links */}
           <div className="mt-4 sm:mt-6 text-center space-y-2">
