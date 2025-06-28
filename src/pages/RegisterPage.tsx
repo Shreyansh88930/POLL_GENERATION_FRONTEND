@@ -273,32 +273,7 @@ const RegisterPage = () => {
             </motion.button>
           </form>
           {/* Social Register */}
-  <div className="mt-6">
-    <div className="flex items-center mb-4">
-      <div className="flex-grow border-t border-gray-700"></div>
-      <span className="mx-3 text-gray-400 text-xs">or sign up with</span>
-      <div className="flex-grow border-t border-gray-700"></div>
-    </div>
-    <div className="flex flex-col gap-3">
-      {/* Google Register - Backend OAuth endpoint needed */}
-      <a
-        href="/auth/google" // TODO: Replace with your backend Google OAuth endpoint
-        className="flex items-center justify-center gap-2 bg-white text-gray-800 font-semibold py-2 rounded-lg shadow hover:bg-gray-100 transition-all"
-      >
-        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
-        Sign up with Google
-      </a>
-      {/* LinkedIn Register - Backend OAuth endpoint needed */}
-      <a
-        href="/auth/linkedin" // TODO: Replace with your backend LinkedIn OAuth endpoint
-        className="flex items-center justify-center gap-2 bg-[#0077b5] text-white font-semibold py-2 rounded-lg shadow hover:bg-[#005983] transition-all"
-      >
-        <img src="https://www.svgrepo.com/show/448234/linkedin.svg" alt="LinkedIn" className="w-5 h-5 bg-white rounded" />
-        Sign up with LinkedIn
-      </a>
-      {/* Add more providers as needed */}
-    </div>
-  </div>
+
 
           {/* Links */}
           <div className="mt-3 sm:mt-4 md:mt-6 text-center">

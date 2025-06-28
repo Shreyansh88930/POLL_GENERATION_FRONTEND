@@ -171,42 +171,8 @@ const LoginPage = () => {
               )}
             </motion.button>
           </form>
-          {/* Social Login */}
-          <div className="mt-6">
-  <div className="flex items-center mb-4">
-    <div className="flex-grow border-t border-gray-700"></div>
-    <span className="mx-3 text-gray-400 text-xs">or sign in with</span>
-    <div className="flex-grow border-t border-gray-700"></div>
-  </div>
-  <div className="flex flex-col gap-3">
-    {/* Google Login - Backend OAuth endpoint needed */}
-    <a
-      href="/auth/google" // TODO: Replace with your backend Google OAuth endpoint
-      className="flex items-center justify-center gap-2 bg-white text-gray-800 font-semibold py-2 rounded-lg shadow hover:bg-gray-100 transition-all"
-    >
-      <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
-      Sign in with Google
-    </a>
-    {/* LinkedIn Login - Backend OAuth endpoint needed */}
-    <a
-      href="/auth/linkedin" // TODO: Replace with your backend LinkedIn OAuth endpoint
-      className="flex items-center justify-center gap-2 bg-[#0077b5] text-white font-semibold py-2 rounded-lg shadow hover:bg-[#005983] transition-all"
-    >
-      <img src="https://www.svgrepo.com/show/448234/linkedin.svg" alt="LinkedIn" className="w-5 h-5 bg-white rounded" />
-      Sign in with LinkedIn
-    </a>
-    {/* Add more providers as needed, e.g. GitHub, Facebook */}
-    {/* 
-    <a
-      href="/auth/github" // TODO: Replace with your backend GitHub OAuth endpoint
-      className="flex items-center justify-center gap-2 bg-gray-900 text-white font-semibold py-2 rounded-lg shadow hover:bg-gray-800 transition-all"
-    >
-      <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub" className="w-5 h-5 bg-white rounded" />
-      Sign in with GitHub
-    </a>
-    */}
-  </div>
-</div>
+         
+
 
           {/* Links */}
           <div className="mt-4 sm:mt-6 text-center space-y-2">

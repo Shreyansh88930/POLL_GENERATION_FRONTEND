@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Settings as SettingsIcon, 
@@ -21,7 +21,7 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const Settings = () => {
   const { isDarkMode, toggleDarkMode, accentColor, setAccentColor } = useTheme();
-
+  const api= import.meta.env.VITE_API_URL || "http://localhost:5000/api";
    // Profile Settings
     const [profileData, setProfileData] = useState({
       firstName: "John",
@@ -30,7 +30,23 @@ const Settings = () => {
       bio: "Computer Science student passionate about learning",
       avatar: "https://imgs.search.brave.com/x5_5ivfXsbQ-qwitDVJyk-aJx6KxpIIi0BgyHXDu8Jg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1wc2QvM2Qt/aWxsdXN0cmF0aW9u/LWh1bWFuLWF2YXRh/ci1wcm9maWxlXzIz/LTIxNTA2NzExNDIu/anBnP3NlbXQ9YWlz/X2h5YnJpZCZ3PTc0/MA?height=100&width=100",
     })
-  
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      const response = await fetch(`${api}/users/profile`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        });
+      const data = await response.json();
+      const newLocal = data.fullName.split(' ');
+      const lastName = newLocal.pop() || '';
+      const firstName = newLocal.join(' ') || '';
+      setProfileData({...profileData, firstName, lastName, email:data.email, avatar:data.avatar || profileData.avatar, bio:data.bio || profileData.bio });
+    };
+    fetchProfileData();
+  }, [api]);
   // Settings state
   const [settings, setSettings] = useState({
     // General Settings
