@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Settings as SettingsIcon,
@@ -27,6 +27,23 @@ const fontSizeMap: Record<string, string> = {
 
 const Settings = () => {
   const { isDarkMode, toggleDarkMode, accentColor, setAccentColor } = useTheme();
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Handle avatar upload
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProfileData((prev) => ({
+          ...prev,
+          avatar: event.target?.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Show "Changes applied!" message after saving
   const [showSavedMessage, setShowSavedMessage] = useState(false);
@@ -260,22 +277,34 @@ const Settings = () => {
 
             <div className="space-y-6">
               {/* Avatar Section */}
-              <div className="flex items-center gap-6">
-                <div className="relative">
-                  <img
-                    src={profileData.avatar || "/placeholder.svg"}
-                    alt="Profile"
-                    className="w-20 h-20 rounded-full border-2 border-purple-500/30"
-                  />
-                  <button className="absolute -bottom-1 -right-1 p-2 bg-purple-600 rounded-full hover:bg-purple-700 transition-colors">
-                    <Camera className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-                <div>
-                  <h4 className="text-white font-medium">Profile Picture</h4>
-                  <p className="text-gray-400 text-sm">Upload a new profile picture</p>
-                </div>
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                <img
+                  src={profileData.avatar || "/placeholder.svg"}
+                  alt="Profile"
+                  className="w-20 h-20 rounded-full border-2 border-purple-500/30 object-cover"
+                />
+                <button
+                  type="button"
+                  className="absolute -bottom-1 -right-1 p-2 bg-purple-600 rounded-full hover:bg-purple-700 transition-colors"
+                  onClick={() => fileInputRef.current?.click()}
+                  aria-label="Upload profile picture"
+                >
+                  <Camera className="w-4 h-4 text-white" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
               </div>
+              <div>
+                <h4 className="text-white font-medium">Profile Picture</h4>
+                <p className="text-gray-400 text-sm">Upload a new profile picture</p>
+              </div>
+            </div>
 
               {/* Name Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
