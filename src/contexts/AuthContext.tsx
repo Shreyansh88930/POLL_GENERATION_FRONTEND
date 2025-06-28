@@ -62,8 +62,10 @@ const login = async (email: string, password: string) => {
     }
     const data = await res.json();
     setUser(data.user);
+    if(data){
     localStorage.setItem("user", JSON.stringify(data.user));
     localStorage.setItem("token", data.token);
+    }
   };
 
   const logout = () => {

@@ -91,7 +91,7 @@ const Settings = () => {
     { name: 'Orange', primary: '#F59E0B', secondary: '#D97706', accent: '#EF4444' },
   ];
 
-  const handleSettingChange = (key: string, value: any) => {
+  const handleSettingChange = (key: string, value: unknown) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
