@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import {
   User,
   Bell,
-  Shield,
   Palette,
   Smartphone,
   Lock,
@@ -16,8 +15,6 @@ import {
   Moon,
   Sun,
   Monitor,
-  BookOpen,
-  Target,
   AlertTriangle
 } from "lucide-react";
 import GlassCard from "../GlassCard";
@@ -62,13 +59,6 @@ const Settings: React.FC = () => {
     soundEnabled: true,
   })
 
-  // Privacy Settings
-  const [privacySettings, setPrivacySettings] = useState({
-    profileVisibility: "public",
-    showInLeaderboard: true,
-    shareProgress: true,
-    allowDirectMessages: true,
-  })
 
   // Appearance Settings
   const [appearanceSettings, setAppearanceSettings] = useState({
@@ -79,14 +69,6 @@ const Settings: React.FC = () => {
     highContrast: false,
   })
 
-  // Learning Preferences
-  const [learningSettings, setLearningSettings] = useState({
-    difficultyLevel: "intermediate",
-    studyReminders: true,
-    goalTracking: true,
-    progressSharing: true,
-    preferredSubjects: ["Computer Science", "Mathematics"],
-  })
 
   const [activeTab, setActiveTab] = useState("profile")
   const [isSaving, setIsSaving] = useState(false)
@@ -95,9 +77,7 @@ const Settings: React.FC = () => {
   const tabs = [
     { id: "profile", label: "Profile", icon: User },
     { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "privacy", label: "Privacy", icon: Shield },
     { id: "appearance", label: "Appearance", icon: Palette },
-    { id: "learning", label: "Learning", icon: BookOpen },
     { id: "security", label: "Security", icon: Lock },
 
   ]
@@ -132,14 +112,6 @@ const Settings: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // Two-Factor Authentication state (for demo)
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-
-  // Handler for Two-Factor Authentication
-  const handleTwoFactorToggle = () => {
-    setTwoFactorEnabled((prev) => !prev);
-    // Here you can add logic to open a modal or call an API
-  };
 
   const handleChangePassword = () => {
     // Navigate to a change password page or open a modal
@@ -317,71 +289,6 @@ const Settings: React.FC = () => {
     </div>
   )
 
-  const renderPrivacySettings = () => (
-    <div className="space-y-6">
-      <GlassCard className="p-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Shield className="w-5 h-5 text-purple-400" />
-          <h3 className="text-lg font-semibold text-white">Privacy Settings</h3>
-        </div>
-
-        <div className="space-y-6">
-          {/* Profile Visibility */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Profile Visibility</label>
-            <select
-              value={privacySettings.profileVisibility}
-              onChange={(e) => setPrivacySettings({ ...privacySettings, profileVisibility: e.target.value })}
-              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
-            >
-              <option value="public" className="bg-gray-800">
-                Public
-              </option>
-              <option value="friends" className="bg-gray-800">
-                Friends Only
-              </option>
-              <option value="private" className="bg-gray-800">
-                Private
-              </option>
-            </select>
-          </div>
-
-          {/* Privacy Toggles */}
-          {[
-            {
-              key: "showInLeaderboard",
-              label: "Show in Leaderboard",
-              desc: "Display your name on public leaderboards",
-            },
-            { key: "shareProgress", label: "Share Progress", desc: "Allow others to see your learning progress" },
-            { key: "allowDirectMessages", label: "Allow Direct Messages", desc: "Let other students message you" },
-          ].map((setting) => (
-            <div key={setting.key} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-              <div>
-                <h4 className="text-white font-medium">{setting.label}</h4>
-                <p className="text-gray-400 text-sm">{setting.desc}</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={privacySettings[setting.key as keyof typeof privacySettings]}
-                  onChange={(e) =>
-                    setPrivacySettings({
-                      ...privacySettings,
-                      [setting.key]: e.target.checked,
-                    })
-                  }
-                  className="sr-only peer"
-                />
-                <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-              </label>
-            </div>
-          ))}
-        </div>
-      </GlassCard>
-    </div>
-  )
-
   const renderAppearanceSettings = () => (
     <div className="space-y-6">
       <GlassCard className="p-6">
@@ -470,72 +377,6 @@ const Settings: React.FC = () => {
     </div>
   )
 
-  const renderLearningSettings = () => (
-    <div className="space-y-6">
-      <GlassCard className="p-6">
-        <div className="flex items-center gap-2 mb-6">
-          <BookOpen className="w-5 h-5 text-purple-400" />
-          <h3 className="text-lg font-semibold text-white">Learning Preferences</h3>
-        </div>
-
-        <div className="space-y-6">
-          {/* Difficulty Level */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3">Preferred Difficulty Level</label>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { value: "beginner", label: "Beginner", color: "green" },
-                { value: "intermediate", label: "Intermediate", color: "yellow" },
-                { value: "advanced", label: "Advanced", color: "red" },
-              ].map((level) => (
-                <button
-                  key={level.value}
-                  onClick={() => setLearningSettings({ ...learningSettings, difficultyLevel: level.value })}
-                  className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                    learningSettings.difficultyLevel === level.value
-                      ? "border-purple-500 bg-purple-500/20"
-                      : "border-white/10 bg-white/5 hover:bg-white/10"
-                  }`}
-                >
-                  <Target className="w-5 h-5 text-white mx-auto mb-1" />
-                  <span className="text-white text-sm">{level.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Learning Toggles */}
-          {[
-            { key: "studyReminders", label: "Study Reminders", desc: "Get reminded to participate in polls" },
-            { key: "goalTracking", label: "Goal Tracking", desc: "Track your learning goals and progress" },
-            { key: "progressSharing", label: "Progress Sharing", desc: "Share achievements with classmates" },
-          ].map((setting) => (
-            <div key={setting.key} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-              <div>
-                <h4 className="text-white font-medium">{setting.label}</h4>
-                <p className="text-gray-400 text-sm">{setting.desc}</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={learningSettings[setting.key as keyof typeof learningSettings]}
-                  onChange={(e) =>
-                    setLearningSettings({
-                      ...learningSettings,
-                      [setting.key]: e.target.checked,
-                    })
-                  }
-                  className="sr-only peer"
-                />
-                <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-              </label>
-            </div>
-          ))}
-        </div>
-      </GlassCard>
-    </div>
-  )
-
    const renderSecuritySettings = () => (
     <div className="space-y-6">
       <GlassCard className="p-6">
@@ -556,30 +397,6 @@ const Settings: React.FC = () => {
               </div>
               <Lock className="w-5 h-5 text-gray-400" />
             </div>
-          </button>
-
-          {/* Two-Factor Authentication */}
-          <button
-            className={`w-full p-4 rounded-lg text-left transition-colors flex items-center justify-between ${
-              twoFactorEnabled
-                ? "bg-green-500/10 border border-green-500/20 hover:bg-green-500/20"
-                : "bg-white/5 hover:bg-white/10"
-            }`}
-            onClick={handleTwoFactorToggle}
-          >
-            <div>
-              <h4 className="text-white font-medium">Two-Factor Authentication</h4>
-              <p className="text-gray-400 text-sm">
-                {twoFactorEnabled
-                  ? "Two-factor authentication is enabled"
-                  : "Add an extra layer of security"}
-              </p>
-            </div>
-            <Shield
-              className={`w-5 h-5 ${
-                twoFactorEnabled ? "text-green-400" : "text-gray-400"
-              }`}
-            />
           </button>
 
           {/* Active Sessions */}
@@ -666,12 +483,8 @@ const Settings: React.FC = () => {
         return renderProfileSettings()
       case "notifications":
         return renderNotificationSettings()
-      case "privacy":
-        return renderPrivacySettings()
       case "appearance":
         return renderAppearanceSettings()
-      case "learning":
-        return renderLearningSettings()
       case "security":
         return renderSecuritySettings()
       default:

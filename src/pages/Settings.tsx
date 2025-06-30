@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Settings as SettingsIcon,
@@ -74,12 +74,6 @@ const Settings = () => {
     microphoneVolume: 75,
     enableAudioFeedback: true,
 
-    // Security Settings
-    enableScreenshotDetection: true,
-    enableCopyProtection: true,
-    enableBlurOnFocusLoss: true,
-    sessionTimeout: 60,
-
     // Theme Settings
     primaryColor: '#8B5CF6',
     secondaryColor: '#3B82F6',
@@ -106,7 +100,7 @@ const Settings = () => {
     { name: 'Orange', primary: '#F59E0B', secondary: '#D97706', accent: '#EF4444' },
   ];
 
-  
+
 
   const handleResetSettings = () => {
     setSettings({
@@ -116,9 +110,6 @@ const Settings = () => {
       selectedMicrophone: 'default',
       microphoneVolume: 75,
       enableAudioFeedback: true,
-      enableScreenshotDetection: true,
-      enableCopyProtection: true,
-      enableBlurOnFocusLoss: true,
       sessionTimeout: 60,
       primaryColor: '#8B5CF6',
       secondaryColor: '#3B82F6',
@@ -156,61 +147,11 @@ const Settings = () => {
   }, [settings.primaryColor, settings.secondaryColor, settings.accentColor]);
 
   useEffect(() => {
-    if (settings.enableCopyProtection) {
-      // Prevent copy, cut, and context menu
-      const preventCopy = (e: ClipboardEvent) => e.preventDefault();
-      const preventContextMenu = (e: MouseEvent) => e.preventDefault();
-      const preventSelect = (e: Event) => e.preventDefault();
-
-      document.addEventListener('copy', preventCopy);
-      document.addEventListener('cut', preventCopy);
-      document.addEventListener('contextmenu', preventContextMenu);
-      document.addEventListener('selectstart', preventSelect);
-
-      // Optional: CSS to disable user selection
-      document.body.style.userSelect = 'none';
-
-      return () => {
-        document.removeEventListener('copy', preventCopy);
-        document.removeEventListener('cut', preventCopy);
-        document.removeEventListener('contextmenu', preventContextMenu);
-        document.removeEventListener('selectstart', preventSelect);
-        document.body.style.userSelect = '';
-      };
-    } else {
-      document.body.style.userSelect = '';
+    const saved = localStorage.getItem('pollAppSettings');
+    if (saved) {
+      setSettings(JSON.parse(saved));
     }
-  }, [settings.enableCopyProtection]);
-
-  useEffect(() => {
-    if (!settings.enableBlurOnFocusLoss) {
-      document.body.classList.remove('blur-on-focus-loss');
-      return;
-    }
-
-    const handleBlur = () => {
-      document.body.classList.add('blur-on-focus-loss');
-    };
-    const handleFocus = () => {
-      document.body.classList.remove('blur-on-focus-loss');
-    };
-
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('focus', handleFocus);
-      document.body.classList.remove('blur-on-focus-loss');
-    };
-  }, [settings.enableBlurOnFocusLoss]);
-
-  useEffect(() => {
-  const saved = localStorage.getItem('pollAppSettings');
-  if (saved) {
-    setSettings(JSON.parse(saved));
-  }
-}, []);
+  }, []);
 
   function handleSettingChange(
     key: keyof typeof settings,
@@ -277,34 +218,34 @@ const Settings = () => {
 
             <div className="space-y-6">
               {/* Avatar Section */}
-            <div className="flex items-center gap-6">
-              <div className="relative">
-                <img
-                  src={profileData.avatar || "/placeholder.svg"}
-                  alt="Profile"
-                  className="w-20 h-20 rounded-full border-2 border-purple-500/30 object-cover"
-                />
-                <button
-                  type="button"
-                  className="absolute -bottom-1 -right-1 p-2 bg-purple-600 rounded-full hover:bg-purple-700 transition-colors"
-                  onClick={() => fileInputRef.current?.click()}
-                  aria-label="Upload profile picture"
-                >
-                  <Camera className="w-4 h-4 text-white" />
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarChange}
-                />
+              <div className="flex items-center gap-6">
+                <div className="relative">
+                  <img
+                    src={profileData.avatar || "/placeholder.svg"}
+                    alt="Profile"
+                    className="w-20 h-20 rounded-full border-2 border-purple-500/30 object-cover"
+                  />
+                  <button
+                    type="button"
+                    className="absolute -bottom-1 -right-1 p-2 bg-purple-600 rounded-full hover:bg-purple-700 transition-colors"
+                    onClick={() => fileInputRef.current?.click()}
+                    aria-label="Upload profile picture"
+                  >
+                    <Camera className="w-4 h-4 text-white" />
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                  />
+                </div>
+                <div>
+                  <h4 className="text-white font-medium">Profile Picture</h4>
+                  <p className="text-gray-400 text-sm">Upload a new profile picture</p>
+                </div>
               </div>
-              <div>
-                <h4 className="text-white font-medium">Profile Picture</h4>
-                <p className="text-gray-400 text-sm">Upload a new profile picture</p>
-              </div>
-            </div>
 
               {/* Name Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -456,61 +397,53 @@ const Settings = () => {
             </div>
           </GlassCard>
 
-          {/* Security Settings */}
-          <GlassCard className="p-6">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+          <GlassCard className="p-6 relative overflow-hidden">
+            {/* Animated lock background */}
+            <div className="absolute right-2 bottom-2 opacity-10 pointer-events-none select-none">
+              <Shield className="w-32 h-32 text-purple-400 animate-pulse" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2 flex items-center relative z-10">
               <Shield className="w-5 h-5 mr-2" />
               Security Settings
             </h3>
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Screenshot Detection</label>
-                  <p className="text-xs text-gray-400">Detect screenshot attempts</p>
-                </div>
-                <ToggleSwitch
-                  enabled={settings.enableScreenshotDetection}
-                  onChange={(value) => handleSettingChange('enableScreenshotDetection', value)}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Copy Protection</label>
-                  <p className="text-xs text-gray-400">Prevent text copying</p>
-                </div>
-                <ToggleSwitch
-                  enabled={settings.enableCopyProtection}
-                  onChange={(value) => handleSettingChange('enableCopyProtection', value)}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Blur on Focus Loss</label>
-                  <p className="text-xs text-gray-400">Blur screen when window loses focus</p>
-                </div>
-                <ToggleSwitch
-                  enabled={settings.enableBlurOnFocusLoss}
-                  onChange={(value) => handleSettingChange('enableBlurOnFocusLoss', value)}
-                />
-              </div>
-
+            <p className="text-gray-400 mb-6 relative z-10">
+              Set how long your session stays active for extra security.
+              <span className="inline-block ml-2 px-2 py-0.5 bg-purple-500/20 text-purple-300 text-xs rounded-full align-middle">Recommended: 60m</span>
+            </p>
+            <div className="space-y-6 relative z-10">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Session Timeout (minutes)
                 </label>
                 <div className="flex items-center space-x-4">
                   <Clock className="w-4 h-4 text-gray-400" />
-                  <input
-                    type="range"
-                    min="15"
-                    max="180"
-                    value={settings.sessionTimeout}
-                    onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}
-                    className="flex-1"
-                  />
-                  <span className="text-white font-medium w-12">{settings.sessionTimeout}m</span>
+                  <div className="flex-1 flex flex-col">
+                    <input
+                      type="range"
+                      min="15"
+                      max="180"
+                      value={settings.sessionTimeout}
+                      onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}
+                      className="w-full accent-purple-500"
+                      title="Adjust how long your session stays active"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>15m</span>
+                      <span>180m</span>
+                    </div>
+                  </div>
+                  <span className="text-white font-medium w-12 text-center">
+                    {settings.sessionTimeout}m
+                  </span>
+                </div>
+                {/* Divider */}
+                <div className="mt-6 border-t border-white/10" />
+                {/* Creative tip */}
+                <div className="mt-4 flex items-center gap-2 text-purple-300 text-xs">
+                  <Shield className="w-4 h-4" />
+                  <span>
+                    Tip: Shorter timeouts keep your account safer on shared devices!
+                  </span>
                 </div>
               </div>
             </div>
@@ -588,56 +521,6 @@ const Settings = () => {
             </div>
           </GlassCard>
 
-          {/* AI Settings */}
-          <GlassCard className="p-6 lg:col-span-2">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-              <Bell className="w-5 h-5 mr-2" />
-              AI & Automation Settings
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  AI Confidence Threshold
-                </label>
-                <div className="flex items-center space-x-4">
-                  <input
-                    type="range"
-                    min="50"
-                    max="100"
-                    value={settings.aiConfidenceThreshold}
-                    onChange={(e) => handleSettingChange('aiConfidenceThreshold', parseInt(e.target.value))}
-                    className="flex-1"
-                  />
-                  <span className="text-white font-medium w-12">{settings.aiConfidenceThreshold}%</span>
-                </div>
-                <p className="text-xs text-gray-400 mt-1">Minimum confidence for AI-generated questions</p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-300">Auto-approve High Confidence</label>
-                    <p className="text-xs text-gray-400">Automatically approve questions above threshold</p>
-                  </div>
-                  <ToggleSwitch
-                    enabled={settings.autoApproveHighConfidence}
-                    onChange={(value) => handleSettingChange('autoApproveHighConfidence', value)}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-300">Smart Filtering</label>
-                    <p className="text-xs text-gray-400">Use AI to filter duplicate questions</p>
-                  </div>
-                  <ToggleSwitch
-                    enabled={settings.enableSmartFiltering}
-                    onChange={(value) => handleSettingChange('enableSmartFiltering', value)}
-                  />
-                </div>
-              </div>
-            </div>
-          </GlassCard>
         </div>
       </motion.div>
     </DashboardLayout>
