@@ -173,10 +173,20 @@ const CreateManualPoll = () => {
   }
 
   const removeOption = (id: string) => {
-    setPollData((prev) => ({
-      ...prev,
-      options: prev.options.filter((opt) => opt.id !== id),
-    }))
+    setPollData((prev) => {
+      let newOptions = prev.options.filter((opt) => opt.id !== id)
+      if (prev.type === "mcq") {
+        // Re-index to a, b, c, ...
+        newOptions = newOptions.map((opt, idx) => ({ ...opt, id: String.fromCharCode(97 + idx) }))
+      } else if (prev.type === "opinion") {
+        // Re-index to 1, 2, 3, ...
+        newOptions = newOptions.map((opt, idx) => ({ ...opt, id: String((idx + 1)) }))
+      }
+      return {
+        ...prev,
+        options: newOptions,
+      }
+    })
   }
 
   const handleTypeChange = (newType: PollData["type"]) => {
