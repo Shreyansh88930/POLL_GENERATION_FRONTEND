@@ -173,10 +173,19 @@ const CreateManualPoll = () => {
   }
 
   const removeOption = (id: string) => {
-    setPollData((prev) => ({
-      ...prev,
-      options: prev.options.filter((opt) => opt.id !== id),
-    }))
+    setPollData((prev) => {
+      let newOptions = prev.options.filter((opt) => opt.id !== id);
+      // Reassign IDs for MCQ and Opinion
+      if (prev.type === "mcq") {
+        newOptions = newOptions.map((opt, idx) => ({ ...opt, id: String.fromCharCode(97 + idx) }));
+      } else if (prev.type === "opinion") {
+        newOptions = newOptions.map((opt, idx) => ({ ...opt, id: String((idx + 1)) }));
+      }
+      return {
+        ...prev,
+        options: newOptions,
+      };
+    });
   }
 
   const handleTypeChange = (newType: PollData["type"]) => {
@@ -361,7 +370,7 @@ const CreateManualPoll = () => {
                                     className="flex items-center space-x-3"
                                   >
                                     <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                                      {option.id.toUpperCase()}
+                                      {String.fromCharCode(65 + index)}
                                     </div>
                                     <input
                                       type="text"
@@ -381,7 +390,7 @@ const CreateManualPoll = () => {
                                           }
                                         }
                                       }}
-                                      placeholder={`Option ${option.id.toUpperCase()}`}
+                                      placeholder={`Option ${String.fromCharCode(65 + index)}`}
                                       className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50"
                                     />
                                     {pollData.options.length > 2 && (
