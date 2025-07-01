@@ -588,12 +588,19 @@ const CreateManualPoll = () => {
                           className="flex items-center space-x-3"
                         >
                           <input
-                            type="number"
-                            value={pollData.timerDuration}
-                            onChange={(e) =>
-                              setPollData((prev) => ({ ...prev, timerDuration: Number.parseInt(e.target.value) || 0 }))
-                            }
+                            type="text"
+                            value={String(pollData.timerDuration)}
+                            onChange={(e) => {
+                              // Only allow digits
+                              let raw = e.target.value.replace(/\D/g, "");
+                              // Remove leading zeros (but allow single zero)
+                              raw = raw.replace(/^0+(?!$)/, "");
+                              // If empty, treat as 0
+                              setPollData((prev) => ({ ...prev, timerDuration: raw === "" ? 0 : Number(raw) }));
+                            }}
                             min="1"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             className={`w-20 px-3 py-2 bg-white/5 border rounded-lg text-white text-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 ${errors.timer ? "border-red-500/50" : "border-white/10"
                               }`}
                           />
