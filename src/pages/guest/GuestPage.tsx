@@ -71,44 +71,43 @@ const GuestPage: React.FC = () => {
             </div>
 
             {/* Controls: Always visible Mute/Unmute + optional Record buttons */}
-<div className="flex flex-wrap gap-4 justify-center">
-  {/* Optional Start/Stop Recording Buttons */}
-  {/* You can remove this block anytime in future */}
-  {isRecording ? (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
-      onClick={stopRecording}
-      className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow"
-    >
-      <MicOff className="w-4 h-4" />
-      Stop Recording
-    </motion.button>
-  ) : (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
-      onClick={startRecording}
-      className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow"
-    >
-      <Mic className="w-4 h-4" />
-      Start Recording
-    </motion.button>
-  )}
+            <div className="flex flex-wrap gap-4 justify-center">
+              {/* Optional Start/Stop Recording Buttons */}
+              {/* You can remove this block anytime in future */}
+              {isRecording ? (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={stopRecording}
+                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow"
+                >
+                  <MicOff className="w-4 h-4" />
+                  Stop Recording
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={startRecording}
+                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow"
+                >
+                  <Mic className="w-4 h-4" />
+                  Start Recording
+                </motion.button>
+              )}
 
-  {/* ✅ Always show Mute/Unmute */}
-  <motion.button
-    whileTap={{ scale: 0.95 }}
-    onClick={toggleMute}
-    disabled={!mediaStreamRef.current} // disable if no mic stream
-    className={`flex items-center gap-2 ${
-      isMuted
-        ? "bg-gray-700 hover:bg-gray-600"
-        : "bg-blue-600 hover:bg-blue-700"
-    } text-white px-5 py-2 rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed`}
-  >
-    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-    {isMuted ? "Unmute" : "Mute"}
-  </motion.button>
-</div>
+              {/* ✅ Always show Mute/Unmute */}
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={toggleMute}
+                disabled={!mediaStreamRef.current} // disable if no mic stream
+                className={`flex items-center gap-2 ${isMuted
+                    ? "bg-gray-700 hover:bg-gray-600"
+                    : "bg-blue-600 hover:bg-blue-700"
+                  } text-white px-5 py-2 rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                {isMuted ? "Unmute" : "Mute"}
+              </motion.button>
+            </div>
 
 
             <p className="text-xs text-gray-400 pt-4 border-t border-white/10">

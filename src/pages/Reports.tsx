@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { FileText, Download, Calendar, PieChart, TrendingUp, Users, Clock, Target, BarChart3 } from "lucide-react"
 import {
@@ -49,6 +49,12 @@ type DifficultyEntry = {
 const Reports = () => {
   const [dateRange, setDateRange] = useState("7days")
   const [reportType, setReportType] = useState("overview")
+
+  const overviewRef = useRef<HTMLDivElement | null>(null);
+  const performanceRef = useRef<HTMLDivElement | null>(null);
+  const engagementRef = useRef<HTMLDivElement | null>(null);
+  const topicsRef = useRef<HTMLDivElement | null>(null);
+
 
   // Mock data
   const performanceData: PerformanceEntry[] = [
@@ -486,6 +492,7 @@ const Reports = () => {
   }
 
   const renderOverviewReport = () => (
+    <div ref={overviewRef}>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Performance Trends */}
       <GlassCard className="p-6">
@@ -545,9 +552,11 @@ const Reports = () => {
         </div>
       </GlassCard>
     </div>
+    </div>
   )
 
-  const renderPerformanceReport = () => (
+const renderPerformanceReport = () => (
+    <div ref={performanceRef}>
     <GlassCard className="p-6">
       <h3 className="text-xl font-bold text-white mb-4">Performance Analysis</h3>
       <div className="space-y-4">
@@ -571,77 +580,83 @@ const Reports = () => {
         ))}
       </div>
     </GlassCard>
+    </div>
   )
 
   const renderEngagementReport = () => (
+    <div ref={engagementRef}>
+      <GlassCard className="p-6">
+        <h3 className="text-xl font-bold text-white mb-4">Engagement: Participation & Response Time</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={engagementData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis dataKey="date" stroke="#9CA3AF" />
+            <YAxis stroke="#9CA3AF" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "rgba(17, 24, 39, 0.8)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "8px",
+                color: "#fff",
+              }}
+            />
+            <Bar dataKey="participation" fill="#3B82F6" />
+            <Bar dataKey="avgTime" fill="#F59E0B" />
+          </BarChart>
+        </ResponsiveContainer>
+      </GlassCard>
+    </div>
+  );
+
+
+  const renderTopicsReport = () => (
+    <div ref={topicsRef}>
     <GlassCard className="p-6">
-      <h3 className="text-xl font-bold text-white mb-4">Engagement: Participation & Response Time</h3>
+      <h3 className="text-xl font-bold text-white mb-4">Topic Distribution</h3>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={engagementData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-          <XAxis dataKey="date" stroke="#9CA3AF" />
-          <YAxis stroke="#9CA3AF" />
+        <RechartsPieChart>
+          <Pie
+            data={topicDistribution}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            fill="#8884d8"
+            isAnimationActive={false} // Optional: smoother hover
+          >
+            {topicDistribution.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
           <Tooltip
+            cursor={{ fill: "rgba(255,255,255,0.05)" }}
+            formatter={(value: number, name: string) => [`${value}%`, name]}
             contentStyle={{
-              backgroundColor: "rgba(17, 24, 39, 0.8)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
+              backgroundColor: "#1f2937", // Tailwind gray-800
+              border: "1px solid rgba(255, 255, 255, 0.2)",
               borderRadius: "8px",
               color: "#fff",
             }}
+            itemStyle={{ color: "#fff" }}
+            labelStyle={{ color: "#a1a1aa" }} // gray-400
           />
-          <Bar dataKey="participation" fill="#3B82F6" />
-          <Bar dataKey="avgTime" fill="#F59E0B" />
-        </BarChart>
+        </RechartsPieChart>
       </ResponsiveContainer>
+
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        {topicDistribution.map((topic, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: topic.color }} />
+            <span className="text-gray-100 text-sm">
+              {topic.name}: {topic.value}%
+            </span>
+          </div>
+        ))}
+      </div>
     </GlassCard>
-  )
-
-  const renderTopicsReport = () => (
-  <GlassCard className="p-6">
-    <h3 className="text-xl font-bold text-white mb-4">Topic Distribution</h3>
-    <ResponsiveContainer width="100%" height={300}>
-      <RechartsPieChart>
-        <Pie
-          data={topicDistribution}
-          dataKey="value"
-          nameKey="name"
-          cx="50%"
-          cy="50%"
-          outerRadius={100}
-          fill="#8884d8"
-          isAnimationActive={false} // Optional: smoother hover
-        >
-          {topicDistribution.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} />
-          ))}
-        </Pie>
-        <Tooltip
-          cursor={{ fill: "rgba(255,255,255,0.05)" }}
-          formatter={(value: number, name: string) => [`${value}%`, name]}
-          contentStyle={{
-            backgroundColor: "#1f2937", // Tailwind gray-800
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            borderRadius: "8px",
-            color: "#fff",
-          }}
-          itemStyle={{ color: "#fff" }}
-          labelStyle={{ color: "#a1a1aa" }} // gray-400
-        />
-      </RechartsPieChart>
-    </ResponsiveContainer>
-
-    <div className="mt-4 grid grid-cols-2 gap-4">
-      {topicDistribution.map((topic, index) => (
-        <div key={index} className="flex items-center space-x-2">
-          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: topic.color }} />
-          <span className="text-gray-100 text-sm">
-            {topic.name}: {topic.value}%
-          </span>
-        </div>
-      ))}
     </div>
-  </GlassCard>
-);
+  );
 
 
   return (
@@ -692,7 +707,16 @@ const Reports = () => {
                   key={template.id}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setReportType(template.id)}
+                  onClick={() => {
+                    setReportType(template.id);
+                    setTimeout(() => {
+                      if (template.id === 'overview') overviewRef.current?.scrollIntoView({ behavior: 'smooth' });
+                      else if (template.id === 'performance') performanceRef.current?.scrollIntoView({ behavior: 'smooth' });
+                      else if (template.id === 'engagement') engagementRef.current?.scrollIntoView({ behavior: 'smooth' });
+                      else if (template.id === 'topics') topicsRef.current?.scrollIntoView({ behavior: 'smooth' });
+                    }, 200);
+                  }}
+
                   className={`p-4 rounded-xl border-2 transition-all duration-200 text-left shadow-md ${reportType === template.id
                     ? "border-primary-500 bg-primary-500/20"
                     : "border-white/20 bg-white/10 hover:border-white/40 hover:bg-white/20"
