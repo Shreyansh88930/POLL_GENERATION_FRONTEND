@@ -1,42 +1,41 @@
 "use client"
 
 import type React from "react"
-import { Play, BarChart3, Trophy, Plus } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import { Play, BarChart3, Trophy, Bell } from "lucide-react"
 import GlassCard from "../GlassCard"
 
-interface QuickAccessCardsProps {
-  onSectionChange: (section: string) => void
-}
+const QuickAccessCards: React.FC = () => {
+  const navigate = useNavigate()
 
-const QuickAccessCards: React.FC<QuickAccessCardsProps> = ({ onSectionChange }) => {
   const quickActions = [
     {
       title: "Join Next Poll",
       description: "Participate in the latest poll and earn points",
       icon: Play,
       color: "from-primary-500 to-purple-600",
-      action: () => onSectionChange("join-poll"),
+      path: "/student/join-poll",
     },
     {
       title: "View Latest Results",
       description: "Check out the results from recent polls",
       icon: BarChart3,
       color: "from-secondary-500 to-blue-600",
-      action: () => onSectionChange("history"),
+      path: "/student/history",
     },
     {
       title: "Check Your Rank",
       description: "See where you stand on the leaderboard",
       icon: Trophy,
       color: "from-accent-500 to-teal-600",
-      action: () => onSectionChange("leaderboard"),
+      path: "/student/leaderboard",
     },
     {
-      title: "View Achievements",
-      description: "Check your badges and accomplishments",
-      icon: Plus,
+      title: "View Notifications",
+      description: "Check alerts and updates for your polls",
+      icon: Bell,
       color: "from-orange-500 to-red-600",
-      action: () => onSectionChange("achievements"),
+      path: "/student/notifications",
     },
   ]
 
@@ -44,10 +43,10 @@ const QuickAccessCards: React.FC<QuickAccessCardsProps> = ({ onSectionChange }) 
     <GlassCard className="p-6">
       <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {quickActions.map((action, index) => (
+        {quickActions.map((action) => (
           <button
             key={action.title}
-            onClick={action.action}
+            onClick={() => navigate(action.path)}
             className="block p-4 bg-white/5 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200 hover:scale-105"
           >
             <div
