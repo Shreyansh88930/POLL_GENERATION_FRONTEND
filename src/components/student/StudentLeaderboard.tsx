@@ -221,6 +221,69 @@ const StudentLeaderboard: React.FC = () => {
           ))}
         </div>
       </GlassCard>
+
+      {/* Full Rankings */}
+      <GlassCard className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-white">Full Rankings</h2>
+          <div className="flex items-center space-x-2 text-sm text-gray-400">
+            <span>{leaderboardData.length} participants</span>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {leaderboardData.map((student, index) => (
+            <motion.div
+              key={student.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className={`flex items-center justify-between p-4 rounded-xl transition-all duration-200 ${getRankBackground(student.rank, student.isCurrentUser)} hover:scale-[1.02]`}
+            >
+              <div className="flex items-center space-x-4">
+                {/* Rank */}
+                <div className="w-12 flex justify-center">
+                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                    <span className="font-bold text-white">#{student.rank}</span>
+                  </div>
+                </div>
+
+                {/* Avatar & Info */}
+                <div className="flex items-center space-x-3">
+                  <div className="text-3xl">👤</div>
+                  <div>
+                    <h4 className={`font-semibold ${student.isCurrentUser ? "text-primary-300" : "text-white"}`}>
+                      {student.name}
+                      {student.isCurrentUser && " (You)"}
+                    </h4>
+                    <div className="flex items-center space-x-3 text-sm text-gray-400">
+                      <span className="flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {student.avgTime}s avg
+                      </span>
+                      <span>{student.pollsAttempted} polls</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Points & Change */}
+              <div className="text-right">
+                <div className="flex items-center space-x-2 mb-1">
+                  <span className="font-bold text-white text-lg">{student.points.toLocaleString()}</span>
+                  <span className="text-xs text-gray-400">pts</span>
+                </div>
+                <div className={`text-sm flex items-center justify-end space-x-1 ${getChangeColor(student.change)}`}>
+                  {getChangeIcon(student.change)}
+                  <span className="font-medium">
+                    {student.change > 0 ? `+${student.change}` : student.change === 0 ? "0" : student.change}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </GlassCard>
     </div>
   )
 }
