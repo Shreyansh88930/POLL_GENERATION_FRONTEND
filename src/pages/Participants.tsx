@@ -262,7 +262,7 @@ const handleExportReport = (participant: {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <UserIcon className="w-6 h-6 text-primary-400" />
-                <h2 className="text-xl font-bold text-white">Students Joining This Poll</h2>
+                <h2 className="text-xl font-bold text-white">Participants Lining Up for This Poll</h2>
                 <span className="bg-primary-500/20 text-primary-400 px-3 py-1 rounded-full text-xs font-medium">
                   {joiningStudents.length} Joined
                 </span>

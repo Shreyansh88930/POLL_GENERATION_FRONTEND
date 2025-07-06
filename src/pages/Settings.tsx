@@ -2,15 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Settings as SettingsIcon,
-  Moon,
-  Sun,
   Clock,
   Volume2,
   Shield,
   Palette,
   Mic,
   User,
-  Bell,
   Save,
   RotateCcw,
   Camera
@@ -26,7 +23,37 @@ const fontSizeMap: Record<string, string> = {
 };
 
 const Settings = () => {
-  const { isDarkMode, toggleDarkMode, accentColor, setAccentColor } = useTheme();
+  const [appearanceSettings, setAppearanceSettings] = useState({
+  reducedMotion: false,
+  highContrast: false,
+});
+
+// Load from localStorage on mount
+useEffect(() => {
+  const stored = localStorage.getItem("appearanceSettings");
+  if (stored) {
+    setAppearanceSettings(JSON.parse(stored));
+  }
+}, []);
+
+// Apply settings whenever they change
+useEffect(() => {
+  localStorage.setItem("appearanceSettings", JSON.stringify(appearanceSettings));
+
+  // Reduced motion
+  if (appearanceSettings.reducedMotion) {
+    document.documentElement.classList.add("reduced-motion");
+  } else {
+    document.documentElement.classList.remove("reduced-motion");
+  }
+
+  // High contrast
+  if (appearanceSettings.highContrast) {
+    document.documentElement.classList.add("high-contrast");
+  } else {
+    document.documentElement.classList.remove("high-contrast");
+  }
+}, [appearanceSettings]);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -451,75 +478,94 @@ const Settings = () => {
 
           {/* Theme Settings */}
           <GlassCard className="p-6">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-              <Palette className="w-5 h-5 mr-2" />
-              Theme Settings
-            </h3>
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Dark Mode</label>
-                  <p className="text-xs text-gray-400">Toggle between light and dark themes</p>
-                </div>
-                <button
-                  onClick={toggleDarkMode}
-                  className="p-2 bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors duration-200"
-                >
-                  {isDarkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                </button>
-              </div>
+  <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+    <Palette className="w-5 h-5 mr-2" />
+    Theme Settings
+  </h3>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-3">
-                  Color Presets
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {colorPresets.map((preset, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        handleSettingChange('primaryColor', preset.primary);
-                        handleSettingChange('secondaryColor', preset.secondary);
-                        handleSettingChange('accentColor', preset.accent);
-                      }}
-                      className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200"
-                    >
-                      <div className="flex space-x-1">
-                        <div
-                          className="w-4 h-4 rounded-full"
-                          style={{ backgroundColor: preset.primary }}
-                        />
-                        <div
-                          className="w-4 h-4 rounded-full"
-                          style={{ backgroundColor: preset.secondary }}
-                        />
-                        <div
-                          className="w-4 h-4 rounded-full"
-                          style={{ backgroundColor: preset.accent }}
-                        />
-                      </div>
-                      <span className="text-white text-sm">{preset.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Font Size
-                </label>
-                <select
-                  value={settings.fontSize}
-                  onChange={(e) => handleSettingChange('fontSize', e.target.value)}
-                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="small" className="bg-gray-800">Small</option>
-                  <option value="medium" className="bg-gray-800">Medium</option>
-                  <option value="large" className="bg-gray-800">Large</option>
-                </select>
-              </div>
+  <div className="space-y-6">
+    {/* Color Presets */}
+    <div>
+      <label className="block text-sm font-medium text-gray-300 mb-3">
+        Color Presets
+      </label>
+      <div className="grid grid-cols-2 gap-3">
+        {colorPresets.map((preset, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              handleSettingChange('primaryColor', preset.primary);
+              handleSettingChange('secondaryColor', preset.secondary);
+              handleSettingChange('accentColor', preset.accent);
+            }}
+            className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200"
+          >
+            <div className="flex space-x-1">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{ backgroundColor: preset.primary }}
+              />
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{ backgroundColor: preset.secondary }}
+              />
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{ backgroundColor: preset.accent }}
+              />
             </div>
-          </GlassCard>
+            <span className="text-white text-sm">{preset.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Font Size */}
+    <div>
+      <label className="block text-sm font-medium text-gray-300 mb-2">
+        Font Size
+      </label>
+      <select
+        value={settings.fontSize}
+        onChange={(e) => handleSettingChange('fontSize', e.target.value)}
+        className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+      >
+        <option value="small" className="bg-gray-800">Small</option>
+        <option value="medium" className="bg-gray-800">Medium</option>
+        <option value="large" className="bg-gray-800">Large</option>
+      </select>
+    </div>
+
+    {/* Accessibility Options */}
+    <div className="space-y-4">
+      {[
+        { key: "reducedMotion", label: "Reduced Motion", desc: "Minimize animations and transitions" },
+        { key: "highContrast", label: "High Contrast", desc: "Increase contrast for better visibility" },
+      ].map((setting) => (
+        <div key={setting.key} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+          <div>
+            <h4 className="text-white font-medium">{setting.label}</h4>
+            <p className="text-gray-400 text-sm">{setting.desc}</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={appearanceSettings[setting.key as keyof typeof appearanceSettings]}
+              onChange={(e) =>
+                setAppearanceSettings({
+                  ...appearanceSettings,
+                  [setting.key]: e.target.checked,
+                })
+              }
+              className="sr-only peer"
+            />
+            <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+          </label>
+        </div>
+      ))}
+    </div>
+  </div>
+</GlassCard>
 
         </div>
       </motion.div>
