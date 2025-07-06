@@ -22,7 +22,7 @@ import { toast, Toaster } from "react-hot-toast";
 
 const Participants = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('accuracy');
+  const [sortBy, setSortBy] = useState('avgTime');
   const [selectedParticipant, setSelectedParticipant] = useState<number | null>(null);
 
   // --- Dummy students currently joining the poll ---
@@ -39,10 +39,10 @@ const Participants = () => {
   };
 
   const mockParticipantReports = [
-    { name: "John Doe", email: "john@example.com", accuracy: "91%", score: 85, participation: 52 },
-    { name: "Jane Smith", email: "jane@example.com", accuracy: "86%", score: 78, participation: 47 },
-    { name: "Mike Lee", email: "mike@example.com", accuracy: "93%", score: 90, participation: 60 },
-    { name: "Sara Kim", email: "sara@example.com", accuracy: "89%", score: 82, participation: 49 },
+    { name: "John Doe", email: "john@example.com", score: 85, participation: 52 },
+    { name: "Jane Smith", email: "jane@example.com", score: 78, participation: 47 },
+    { name: "Mike Lee", email: "mike@example.com", score: 90, participation: 60 },
+    { name: "Sara Kim", email: "sara@example.com", score: 82, participation: 49 },
   ];
 
   const [showExportOptions, setShowExportOptions] = useState(false);
@@ -114,10 +114,8 @@ const Participants = () => {
   id: "1",
   name: "Diana Prince",
   email: "diana@example.com",
-  accuracy: 95.1,
   avgTime: 1.8,
   polls: 41,
-  streak: 15,
   recentActivity: [
     { activity: "Answered question correctly", timeAgo: "2 minutes ago" },
     { activity: "Joined poll session", timeAgo: "15 minutes ago" },
@@ -134,8 +132,6 @@ const Participants = () => {
 
   const sortedParticipants = [...filteredParticipants].sort((a, b) => {
     switch (sortBy) {
-      case 'accuracy':
-        return b.accuracy - a.accuracy;
       case 'avgTime':
         return a.avgTime - b.avgTime;
       case 'pollsAttempted':
@@ -153,10 +149,8 @@ const handleExportReport = (participant: {
   id: string
   name: string
   email: string
-  accuracy: number
   avgTime: number
   polls: number
-  streak: number
   recentActivity: { activity: string; timeAgo: string }[]
 }) => {
   try {
@@ -169,13 +163,11 @@ const handleExportReport = (participant: {
     doc.text(`Name: ${participant.name}`, 20, 40)
     doc.text(`Email: ${participant.email}`, 20, 48)
 
-    doc.text(`Accuracy: ${participant.accuracy}%`, 20, 60)
-    doc.text(`Avg Time: ${participant.avgTime}s`, 20, 68)
-    doc.text(`Polls Attempted: ${participant.polls}`, 20, 76)
-    doc.text(`Streak: ${participant.streak}`, 20, 84)
+    doc.text(`Avg Time: ${participant.avgTime}s`, 20, 60)
+    doc.text(`Polls Attempted: ${participant.polls}`, 20, 68)
 
     autoTable(doc, {
-      startY: 100,
+      startY: 85,
       head: [["Activity", "Time"]],
       body: participant.recentActivity.map((item) => [item.activity, item.timeAgo]),
       theme: "striped",
@@ -330,21 +322,7 @@ const handleExportReport = (participant: {
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <GlassCard className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm">Average Accuracy</p>
-                  <p className="text-2xl font-bold text-white">
-                    {(participants.reduce((acc, p) => acc + p.accuracy, 0) / participants.length).toFixed(1)}%
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Target className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </GlassCard>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <GlassCard className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -372,20 +350,6 @@ const handleExportReport = (participant: {
                 </div>
               </div>
             </GlassCard>
-
-            <GlassCard className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm">Top Streak</p>
-                  <p className="text-2xl font-bold text-white">
-                    {Math.max(...participants.map(p => p.streak))}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
-                  <Award className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </GlassCard>
           </div>
 
           {/* Controls */}
@@ -406,7 +370,6 @@ const handleExportReport = (participant: {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-4 py-2 bg-white/10 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                <option value="accuracy" className="bg-gray-800">Sort by Accuracy</option>
                 <option value="avgTime" className="bg-gray-800">Sort by Response Time</option>
                 <option value="pollsAttempted" className="bg-gray-800">Sort by Polls Attempted</option>
                 <option value="name" className="bg-gray-800">Sort by Name</option>
@@ -450,10 +413,8 @@ const handleExportReport = (participant: {
                 <thead>
                   <tr className="border-b border-gray-700">
                     <th className="text-left py-3 px-4 text-gray-300 font-medium">Participant</th>
-                    <th className="text-left py-3 px-4 text-gray-300 font-medium">Accuracy</th>
                     <th className="text-left py-3 px-4 text-gray-300 font-medium">Avg Time</th>
                     <th className="text-left py-3 px-4 text-gray-300 font-medium">Polls</th>
-                    <th className="text-left py-3 px-4 text-gray-300 font-medium">Streak</th>
                     <th className="text-left py-3 px-4 text-gray-300 font-medium">Last Active</th>
                     <th className="text-left py-3 px-4 text-gray-300 font-medium">Actions</th>
                   </tr>
@@ -484,27 +445,10 @@ const handleExportReport = (participant: {
                         </div>
                       </td>
                       <td className="py-4 px-4">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-white font-medium">{participant.accuracy}%</span>
-                          <div className="w-16 bg-gray-700 rounded-full h-2">
-                            <div
-                              className="bg-primary-500 rounded-full h-2"
-                              style={{ width: `${participant.accuracy}%` }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4">
                         <span className="text-white">{participant.avgTime}s</span>
                       </td>
                       <td className="py-4 px-4">
                         <span className="text-white">{participant.pollsAttempted}</span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex items-center space-x-1">
-                          <Award className="w-4 h-4 text-yellow-400" />
-                          <span className="text-white">{participant.streak}</span>
-                        </div>
                       </td>
                       <td className="py-4 px-4">
                         <span className={getStatusColor(participant.status)}>
@@ -577,20 +521,12 @@ const handleExportReport = (participant: {
 
                           <div className="grid grid-cols-2 gap-4">
                             <div className="bg-white/5 rounded-lg p-4">
-                              <p className="text-gray-400 text-sm">Accuracy</p>
-                              <p className="text-xl font-bold text-white">{participant.accuracy}%</p>
-                            </div>
-                            <div className="bg-white/5 rounded-lg p-4">
                               <p className="text-gray-400 text-sm">Avg Time</p>
                               <p className="text-xl font-bold text-white">{participant.avgTime}s</p>
                             </div>
                             <div className="bg-white/5 rounded-lg p-4">
                               <p className="text-gray-400 text-sm">Polls</p>
                               <p className="text-xl font-bold text-white">{participant.pollsAttempted}</p>
-                            </div>
-                            <div className="bg-white/5 rounded-lg p-4">
-                              <p className="text-gray-400 text-sm">Streak</p>
-                              <p className="text-xl font-bold text-white">{participant.streak}</p>
                             </div>
                           </div>
                         </div>
