@@ -104,13 +104,20 @@ const Leaderboard = () => {
         transition={{ duration: 0.5 }}
         className="space-y-6 overflow-x-hidden"
       >
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Leaderboard</h1>
-            <p className="text-gray-400">Top performing participants</p>
-          </div>
-        </div>
+        {/* Header with Current Meeting Tag */}
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 mb-6">
+  {/* Heading */}
+  <div>
+    <h1 className="text-3xl font-bold text-white mb-1 sm:mb-0">Leaderboard</h1>
+    <p className="text-gray-400">Top performing participants</p>
+  </div>
+
+  {/* Responsive Current Meeting Tag */}
+  <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs sm:text-sm font-medium text-center w-max self-start sm:self-auto">
+    CURRENT MEETING
+  </div>
+</div>
+
 
         {/* Top 3 Podium */}
         <GlassCard className="p-8">
@@ -149,7 +156,6 @@ const Leaderboard = () => {
                 transition={{ delay: 0.1 }}
                 className="flex flex-col items-center text-center order-2 md:order-1 w-full md:w-auto"
               >
-                {/* ...existing code... */}
                 <div className="relative mb-4">
                   <div className="w-24 h-24 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-2 animate-glow">
                     <span className="text-white font-bold text-xl">
@@ -195,46 +201,61 @@ const Leaderboard = () => {
         </GlassCard>
         {/* Full Leaderboard */}
         <GlassCard className="p-6">
+          <h3 className="text-xl font-bold text-white mb-6">
+            Meeting Rankings
+          </h3>
           <div className="space-y-4">
-            {meetingLeaderboard.map((participant, index) => (
-              <motion.div
-                key={participant.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`flex items-center justify-between p-4 rounded-lg border ${participant.rank <= 3
-                    ? 'bg-gradient-to-r from-white/10 to-white/5 border-white/20'
-                    : 'bg-white/5 border-white/10'
-                  } hover:border-white/20 transition-colors duration-200`}
-              >
-                {/* Left Section: Rank Icon, Change Icon, Avatar, Name */}
-                <div className="flex items-center space-x-4">
-                  {/* Rank and Change */}
-                  <div className="flex items-center space-x-2">
-                    {getRankIcon(participant.rank)}
-                    {getChangeIcon(participant.change)}
+            {meetingLeaderboard.map((participant, index) => {
+              const maxTime = 60; // Maximum time for normalization
+              const barPercent = Math.min((participant.avgTime / maxTime) * 100, 100);
+
+              return (
+                <motion.div
+                  key={participant.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`flex items-center justify-between p-4 rounded-lg border ${participant.rank <= 3
+                      ? 'bg-gradient-to-r from-white/10 to-white/5 border-white/20'
+                      : 'bg-white/5 border-white/10'
+                    } hover:border-white/20 transition-colors duration-200`}
+                >
+                  {/* Left Section: Rank Icon, Change Icon, Avatar, Name */}
+                  <div className="flex items-center space-x-4">
+                    {/* Rank and Change */}
+                    <div className="flex items-center space-x-2">
+                      {getRankIcon(participant.rank)}
+                      {getChangeIcon(participant.change)}
+                    </div>
+
+                    {/* Avatar */}
+                    <div className={`w-10 h-10 bg-gradient-to-r ${getRankColor(participant.rank)} rounded-full flex items-center justify-center`}>
+                      <span className="text-white font-bold text-sm">
+                        {participant.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+
+                    {/* Name */}
+                    <h4 className="text-white font-semibold">{participant.name}</h4>
                   </div>
 
-                  {/* Avatar */}
-                  <div className={`w-10 h-10 bg-gradient-to-r ${getRankColor(participant.rank)} rounded-full flex items-center justify-center`}>
-                    <span className="text-white font-bold text-sm">
-                      {participant.name.split(' ').map(n => n[0]).join('')}
-                    </span>
+                  {/* Right Section: Timer + Visual Bar */}
+                  <div className="flex items-center space-x-2 text-sm text-gray-400 w-32">
+                    <Clock className="w-4 h-4" />
+                    <span>{participant.avgTime}s</span>
+                    <div className="relative flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-teal-500 rounded-full"
+                        style={{ width: `${barPercent}%` }}
+                      />
+                    </div>
                   </div>
-
-                  {/* Name */}
-                  <h4 className="text-white font-semibold">{participant.name}</h4>
-                </div>
-
-                {/* Right Section: Timer */}
-                <div className="flex items-center space-x-1 text-sm text-gray-400">
-                  <Clock className="w-4 h-4" />
-                  <span>{participant.avgTime}s</span>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </GlassCard>
+
       </motion.div>
     </DashboardLayout>
   );
