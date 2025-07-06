@@ -23,8 +23,8 @@ const LoadingScreen = () => {
                 rotate: 360 
               }}
               transition={{ 
-                scale: { duration: 2, repeat: Infinity },
-                rotate: { duration: 4, repeat: Infinity, ease: "linear" }
+                scale: { duration: 1, repeat: Infinity },
+                rotate: { duration: 2, repeat: Infinity, ease: "linear" }
               }}
               className="w-16 h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center shadow-lg animate-glow"
             >
@@ -37,7 +37,7 @@ const LoadingScreen = () => {
                 key={i}
                 animate={{ rotate: 360 }}
                 transition={{ 
-                  duration: 3 + i,
+                  duration: 1.5 + i * 0.5,
                   repeat: Infinity,
                   ease: "linear"
                 }}
@@ -53,9 +53,9 @@ const LoadingScreen = () => {
                     opacity: [0.5, 1, 0.5]
                   }}
                   transition={{ 
-                    duration: 2,
+                    duration: 1,
                     repeat: Infinity,
-                    delay: i * 0.5
+                    delay: i * 0.3
                   }}
                   className={`absolute w-3 h-3 rounded-full ${
                     i === 0 ? 'bg-primary-400 top-0 left-1/2 -translate-x-1/2 -translate-y-1/2' :
@@ -76,9 +76,9 @@ const LoadingScreen = () => {
                   opacity: [0.3, 1, 0.3],
                 }}
                 transition={{
-                  duration: 3,
+                  duration: 1.5,
                   repeat: Infinity,
-                  delay: i * 0.5,
+                  delay: i * 0.3,
                 }}
                 className="absolute w-2 h-2 bg-gradient-to-r from-primary-400 to-accent-400 rounded-full"
                 style={{
@@ -93,7 +93,7 @@ const LoadingScreen = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.3 }}
             className="absolute bottom-32 text-center"
           >
             <h2 className="text-2xl font-bold text-white mb-2">
@@ -101,7 +101,7 @@ const LoadingScreen = () => {
             </h2>
             <motion.p
               animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              transition={{ duration: 1, repeat: Infinity }}
               className="text-gray-400"
             >
               Initializing AI-powered polling...
