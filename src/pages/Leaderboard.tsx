@@ -105,18 +105,18 @@ const Leaderboard = () => {
         className="space-y-6 overflow-x-hidden"
       >
         {/* Header with Current Meeting Tag */}
-<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 mb-6">
-  {/* Heading */}
-  <div>
-    <h1 className="text-3xl font-bold text-white mb-1 sm:mb-0">Leaderboard</h1>
-    <p className="text-gray-400">Top performing participants</p>
-  </div>
-
-  {/* Responsive Current Meeting Tag */}
-  <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs sm:text-sm font-medium text-center w-max self-start sm:self-auto">
-    CURRENT MEETING
-  </div>
-</div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 mb-6">
+          {/* Heading */}
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-1 sm:mb-0">Leaderboard</h1>
+            <p className="text-gray-400">Top performing participants</p>
+          </div>
+        
+          {/* Responsive Current Meeting Tag */}
+          <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs sm:text-sm font-medium text-center w-max self-start sm:self-auto">
+            Current Meeting
+          </div>
+        </div>
 
 
         {/* Top 3 Podium */}
