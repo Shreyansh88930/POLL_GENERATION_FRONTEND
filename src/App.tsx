@@ -28,8 +28,6 @@ import GuestPage from './pages/guest/GuestPage';
 import JoinPollPage from './components/student/JoinPollPage';
 import PollHistoryPage from './components/student/PollHistoryPage';
 import PollQuestionsPage from './components/student/PollQuestionsPage';
-import StudentProfilePage from './components/student/StudentProfilePage';
-import AchievementPage from './components/student/AchievementPage';
 import NotificationPage from './components/student/NotificationPage';
 import SettingsStudent from './components/student/Settings';
 import StudentLeaderboard from './components/student/StudentLeaderboard';
@@ -89,8 +87,6 @@ function App() {
         <Route path="join-poll" element={<JoinPollPage />} />
         <Route path="history" element={<PollHistoryPage />} />
         <Route path="poll-questions" element={<PollQuestionsPage roomCode="" />} />
-        <Route path="profile" element={<StudentProfilePage />} />
-        <Route path="achievements" element={<AchievementPage />} />
         <Route path="notifications" element={<NotificationPage />} />
         <Route path="settings" element={<SettingsStudent />} />
         <Route path="leaderboard" element={<StudentLeaderboard />} />

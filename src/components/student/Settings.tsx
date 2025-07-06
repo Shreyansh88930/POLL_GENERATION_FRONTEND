@@ -1,20 +1,17 @@
 "use client"
 
 import type React from "react"
-import { useState,useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   User,
   Bell,
-  Palette,
   Smartphone,
   Lock,
   Camera,
   Save,
   RefreshCw,
-  Moon,
-  Sun,
-  Monitor,
+PersonStanding,
   AlertTriangle
 } from "lucide-react";
 import GlassCard from "../GlassCard";
@@ -77,21 +74,21 @@ const Settings: React.FC = () => {
   const tabs = [
     { id: "profile", label: "Profile", icon: User },
     { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "appearance", label: "Appearance", icon: Palette },
+    { id: "accessibility", label: "Accessibility", icon: PersonStanding },
     { id: "security", label: "Security", icon: Lock },
 
   ]
 
   useEffect(() => {
-  document.documentElement.style.fontSize =
-    appearanceSettings.fontSize === "small"
-      ? "14px"
-      : appearanceSettings.fontSize === "large"
-      ? "18px"
-      : "16px";
-}, [appearanceSettings.fontSize]);
+    document.documentElement.style.fontSize =
+      appearanceSettings.fontSize === "small"
+        ? "14px"
+        : appearanceSettings.fontSize === "large"
+          ? "18px"
+          : "16px";
+  }, [appearanceSettings.fontSize]);
 
-// Accessibility: Apply reduced motion and high contrast
+  // Accessibility: Apply reduced motion and high contrast
   useEffect(() => {
     // Reduced Motion
     if (appearanceSettings.reducedMotion) {
@@ -120,16 +117,14 @@ const Settings: React.FC = () => {
   };
 
   const handleSave = async () => {
-  setIsSaving(true);
-  // Save all settings to localStorage (or API)
-  localStorage.setItem("studentSettings", JSON.stringify({
-    profileData,
-    notificationSettings,
-    privacySettings,
-    appearanceSettings,
-    learningSettings,
-  }));
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsSaving(true);
+    // Save all settings to localStorage (or API)
+    localStorage.setItem("studentSettings", JSON.stringify({
+      profileData,
+      notificationSettings,
+      appearanceSettings,
+    }));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsSaving(false);
     setShowSavedMessage(true);
     setTimeout(() => setShowSavedMessage(false), 2000); // Hide after 2 seconds
@@ -293,39 +288,11 @@ const Settings: React.FC = () => {
     <div className="space-y-6">
       <GlassCard className="p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Palette className="w-5 h-5 text-purple-400" />
-          <h3 className="text-lg font-semibold text-white">Appearance & Accessibility</h3>
+          <PersonStanding className="w-5 h-5 text-purple-400" />
+          <h3 className="text-lg font-semibold text-white">Accessibility Settings</h3>
         </div>
 
         <div className="space-y-6">
-          {/* Theme Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3">Theme</label>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { value: "dark", label: "Dark", icon: Moon },
-                { value: "light", label: "Light", icon: Sun },
-                { value: "auto", label: "Auto", icon: Monitor },
-              ].map((theme) => {
-                const Icon = theme.icon
-                return (
-                  <button
-                    key={theme.value}
-                    onClick={() => setAppearanceSettings({ ...appearanceSettings, theme: theme.value })}
-                    className={`p-4 rounded-lg border-2 transition-all duration-200 ${
-                      appearanceSettings.theme === theme.value
-                        ? "border-purple-500 bg-purple-500/20"
-                        : "border-white/10 bg-white/5 hover:bg-white/10"
-                    }`}
-                  >
-                    <Icon className="w-6 h-6 text-white mx-auto mb-2" />
-                    <span className="text-white text-sm">{theme.label}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
           {/* Font Size */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Font Size</label>
@@ -377,7 +344,7 @@ const Settings: React.FC = () => {
     </div>
   )
 
-   const renderSecuritySettings = () => (
+  const renderSecuritySettings = () => (
     <div className="space-y-6">
       <GlassCard className="p-6">
         <div className="flex items-center gap-2 mb-6">
@@ -483,7 +450,7 @@ const Settings: React.FC = () => {
         return renderProfileSettings()
       case "notifications":
         return renderNotificationSettings()
-      case "appearance":
+      case "accessibility":
         return renderAppearanceSettings()
       case "security":
         return renderSecuritySettings()
@@ -522,11 +489,10 @@ const Settings: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                activeTab === tab.id
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${activeTab === tab.id
                   ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
                   : "bg-white/10 text-gray-300 hover:bg-white/20"
-              }`}
+                }`}
             >
               <Icon className="w-4 h-4" />
               <span className="hidden sm:inline">{tab.label}</span>

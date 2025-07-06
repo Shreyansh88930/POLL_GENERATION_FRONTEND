@@ -5,8 +5,6 @@ import {
   Users,
   Trophy,
   History,
-  User,
-  Award,
   Settings,
   Bell,
   Home,
@@ -17,6 +15,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
 interface StudentSidebarProps {
   isOpen: boolean;
@@ -28,13 +27,17 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [animationKey, setAnimationKey] = useState(0);
+
+  useEffect(() => {
+    setAnimationKey(prev => prev + 1); // Triggers re-animation on route change
+  }, [location.pathname]);
+
   const menuItems = [
     { id: "", label: "Dashboard", icon: Home },
     { id: "join-poll", label: "Join Poll", icon: Link },
     { id: "leaderboard", label: "Leaderboard", icon: Trophy },
     { id: "history", label: "Poll History", icon: History },
-    { id: "profile", label: "Profile", icon: User },
-    { id: "achievements", label: "Achievements", icon: Award },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "settings", label: "Settings", icon: Settings },
   ];
@@ -94,7 +97,11 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ isOpen, onClose }) => {
       <div className="pointer-events-none absolute left-0 right-0 top-0 h-6 z-10 bg-gradient-to-b from-black/80 to-transparent" />
 
       {/* Scrollable Navigation */}
-      <nav className="space-y-2 flex-1 overflow-y-auto pr-2 hide-scrollbar relative z-0" tabIndex={0}>
+      <motion.nav
+        key={animationKey}
+        className="space-y-2 flex-1 overflow-y-auto pr-2 hide-scrollbar relative z-0"
+        tabIndex={0}
+      >
         {menuItems.map((item, index) => {
           const Icon = item.icon;
           const active = isActive(item.id);
@@ -142,22 +149,12 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ isOpen, onClose }) => {
             <span>Logout</span>
           </button>
         </motion.div>
-      </nav>
+      </motion.nav>
     </div>
   );
 
   return (
     <>
-      {/* Mobile Hamburger */}
-      <button
-        className="fixed top-4 left-4 z-50 md:hidden bg-black/50 p-2 rounded-lg"
-        onClick={() => onClose()}
-        aria-label="Open sidebar"
-        type="button"
-      >
-        <Menu className="w-6 h-6 text-white" />
-      </button>
-
       {/* Desktop Sidebar */}
       <motion.div
         initial={{ x: -100, opacity: 0 }}
