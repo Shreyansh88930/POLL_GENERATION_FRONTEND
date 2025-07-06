@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Users, Target, TrendingUp, Clock, Brain, Mic, Trophy, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -8,25 +7,6 @@ import GlassCard from '../components/GlassCard';
 
 const HostDashboard = () => {
   const navigate = useNavigate();
-
-  // Mock data
-  const participationData = [
-    { name: 'Mon', participants: 45, accuracy: 85 },
-    { name: 'Tue', participants: 52, accuracy: 78 },
-    { name: 'Wed', participants: 38, accuracy: 92 },
-    { name: 'Thu', participants: 61, accuracy: 86 },
-    { name: 'Fri', participants: 48, accuracy: 89 },
-    { name: 'Sat', participants: 35, accuracy: 91 },
-    { name: 'Sun', participants: 42, accuracy: 87 },
-  ];
-
-  const confusionData = [
-    { topic: 'React Hooks', confusion: 25 },
-    { topic: 'State Management', confusion: 42 },
-    { topic: 'API Integration', confusion: 18 },
-    { topic: 'TypeScript', confusion: 35 },
-    { topic: 'Testing', confusion: 28 },
-  ];
 
   const statsCards = [
     {
@@ -37,25 +17,11 @@ const HostDashboard = () => {
       color: 'from-primary-500 to-purple-600',
     },
     {
-      title: 'Accuracy Rate',
-      value: '87.5%',
-      change: '+5.2%',
-      icon: TrendingUp,
-      color: 'from-secondary-500 to-blue-600',
-    },
-    {
       title: 'Active Participants',
       value: '342',
       change: '+18%',
       icon: Users,
       color: 'from-accent-500 to-teal-600',
-    },
-    {
-      title: 'Avg Response Time',
-      value: '2.3s',
-      change: '-0.5s',
-      icon: Clock,
-      color: 'from-orange-500 to-red-600',
     },
   ];
 
@@ -122,7 +88,7 @@ const HostDashboard = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {statsCards.map((card, index) => (
                 <motion.div
                   key={card.title}
@@ -146,73 +112,6 @@ const HostDashboard = () => {
               ))}
             </div>
 
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Participation Trends */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <GlassCard className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-4">Participation Trends</h3>
-                  <div className="h-64 min-w-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={participationData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="name" stroke="#9CA3AF" />
-                        <YAxis stroke="#9CA3AF" />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: 'rgba(17, 24, 39, 0.8)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            borderRadius: '8px',
-                            color: '#fff'
-                          }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="participants"
-                          stroke="#8B5CF6"
-                          strokeWidth={2}
-                          dot={{ fill: '#8B5CF6', strokeWidth: 2 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </GlassCard>
-              </motion.div>
-
-              {/* Confusion Analysis */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <GlassCard className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-4">Confusion Analysis</h3>
-                  <div className="h-64 min-w-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={confusionData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="topic" stroke="#9CA3AF" />
-                        <YAxis stroke="#9CA3AF" />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: 'rgba(17, 24, 39, 0.8)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            borderRadius: '8px',
-                            color: '#fff'
-                          }}
-                        />
-                        <Bar dataKey="confusion" fill="#3B82F6" radius={[4, 4, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </GlassCard>
-              </motion.div>
-            </div>
-
             {/* Quick Actions */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -222,7 +121,7 @@ const HostDashboard = () => {
               <GlassCard className="p-6">
                 <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {quickActions.map((action, index) => (
+                  {quickActions.map((action) => (
                     <motion.a
                       key={action.title}
                       href={action.href}
