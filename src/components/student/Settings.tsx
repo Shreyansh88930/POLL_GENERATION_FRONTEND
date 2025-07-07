@@ -11,7 +11,7 @@ import {
   Camera,
   Save,
   RefreshCw,
-PersonStanding,
+  PersonStanding,
   AlertTriangle
 } from "lucide-react";
 import GlassCard from "../GlassCard";
@@ -57,7 +57,21 @@ const Settings: React.FC = () => {
     soundEnabled: true,
   })
 
-const { settings: appearanceSettings, updateSetting } = useAccessibility();
+  const { settings: appearanceSettings, updateSetting } = useAccessibility();
+  const { fontSize, highContrast, reducedMotion } = appearanceSettings;
+
+useEffect(() => {
+  document.documentElement.style.fontSize =
+    fontSize === "small"
+      ? "14px"
+      : fontSize === "large"
+        ? "18px"
+        : "16px";
+
+  document.body.classList.toggle("high-contrast", highContrast);
+  document.body.classList.toggle("reduced-motion", reducedMotion);
+}, [fontSize, highContrast, reducedMotion]);
+
 
   const [activeTab, setActiveTab] = useState("profile")
   const [isSaving, setIsSaving] = useState(false)
@@ -71,14 +85,14 @@ const { settings: appearanceSettings, updateSetting } = useAccessibility();
 
   ]
 
-useEffect(() => {
-  document.documentElement.style.fontSize =
-    appearanceSettings.fontSize === "small"
-      ? "14px"
-      : appearanceSettings.fontSize === "large"
-        ? "18px"
-        : "16px";
-}, [appearanceSettings.fontSize]);
+  useEffect(() => {
+    document.documentElement.style.fontSize =
+      appearanceSettings.fontSize === "small"
+        ? "14px"
+        : appearanceSettings.fontSize === "large"
+          ? "18px"
+          : "16px";
+  }, [appearanceSettings.fontSize]);
 
   // Accessibility: Apply reduced motion and high contrast
   useEffect(() => {
@@ -289,10 +303,10 @@ useEffect(() => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Font Size</label>
             <select
-  value={appearanceSettings.fontSize}
-  onChange={(e) => updateSetting("fontSize", e.target.value as "small" | "medium" | "large")}
-  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
->
+              value={appearanceSettings.fontSize}
+              onChange={(e) => updateSetting("fontSize", e.target.value as "small" | "medium" | "large")}
+              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+            >
               <option value="small" className="bg-gray-800">
                 Small
               </option>
@@ -306,31 +320,30 @@ useEffect(() => {
           </div>
 
           {/* Accessibility Options */}
-          {[
-            { key: "reducedMotion", label: "Reduced Motion", desc: "Minimize animations and transitions" },
-            { key: "highContrast", label: "High Contrast", desc: "Increase contrast for better visibility" },
-          ].map((setting) => (
-            <div key={setting.key} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+          {(["reducedMotion", "highContrast"] as const).map((key) => (
+            <div key={key} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
               <div>
-                <h4 className="text-white font-medium">{setting.label}</h4>
-                <p className="text-gray-400 text-sm">{setting.desc}</p>
+                <h4 className="text-white font-medium">
+                  {key === "reducedMotion" ? "Reduced Motion" : "High Contrast"}
+                </h4>
+                <p className="text-gray-400 text-sm">
+                  {key === "reducedMotion"
+                    ? "Minimize animations and transitions"
+                    : "Increase contrast for better visibility"}
+                </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={appearanceSettings[setting.key as keyof typeof appearanceSettings]}
-                  onChange={(e) =>
-                    setAppearanceSettings({
-                      ...appearanceSettings,
-                      [setting.key]: e.target.checked,
-                    })
-                  }
+                  checked={appearanceSettings[key]}
+                  onChange={(e) => updateSetting(key, e.target.checked)}
                   className="sr-only peer"
                 />
                 <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
               </label>
             </div>
           ))}
+
         </div>
       </GlassCard>
     </div>
@@ -482,8 +495,8 @@ useEffect(() => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${activeTab === tab.id
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                  : "bg-white/10 text-gray-300 hover:bg-white/20"
+                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                : "bg-white/10 text-gray-300 hover:bg-white/20"
                 }`}
             >
               <Icon className="w-4 h-4" />
