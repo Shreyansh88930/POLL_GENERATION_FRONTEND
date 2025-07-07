@@ -15,6 +15,7 @@ PersonStanding,
   AlertTriangle
 } from "lucide-react";
 import GlassCard from "../GlassCard";
+import { useAccessibility } from "../../contexts/AccessibilityContext";
 
 
 const Settings: React.FC = () => {
@@ -56,16 +57,7 @@ const Settings: React.FC = () => {
     soundEnabled: true,
   })
 
-
-  // Appearance Settings
-  const [appearanceSettings, setAppearanceSettings] = useState({
-    theme: "dark",
-    language: "en",
-    fontSize: "medium",
-    reducedMotion: false,
-    highContrast: false,
-  })
-
+const { settings: appearanceSettings, updateSetting } = useAccessibility();
 
   const [activeTab, setActiveTab] = useState("profile")
   const [isSaving, setIsSaving] = useState(false)
@@ -79,14 +71,14 @@ const Settings: React.FC = () => {
 
   ]
 
-  useEffect(() => {
-    document.documentElement.style.fontSize =
-      appearanceSettings.fontSize === "small"
-        ? "14px"
-        : appearanceSettings.fontSize === "large"
-          ? "18px"
-          : "16px";
-  }, [appearanceSettings.fontSize]);
+useEffect(() => {
+  document.documentElement.style.fontSize =
+    appearanceSettings.fontSize === "small"
+      ? "14px"
+      : appearanceSettings.fontSize === "large"
+        ? "18px"
+        : "16px";
+}, [appearanceSettings.fontSize]);
 
   // Accessibility: Apply reduced motion and high contrast
   useEffect(() => {
@@ -297,10 +289,10 @@ const Settings: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Font Size</label>
             <select
-              value={appearanceSettings.fontSize}
-              onChange={(e) => setAppearanceSettings({ ...appearanceSettings, fontSize: e.target.value })}
-              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
-            >
+  value={appearanceSettings.fontSize}
+  onChange={(e) => updateSetting("fontSize", e.target.value as "small" | "medium" | "large")}
+  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+>
               <option value="small" className="bg-gray-800">
                 Small
               </option>

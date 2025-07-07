@@ -33,6 +33,7 @@ import SettingsStudent from './components/student/Settings';
 import StudentLeaderboard from './components/student/StudentLeaderboard';
 import DashboardHomePage from './components/student/DashboardHomePage';
 import ActiveSessions from './components/student/ActiveSessions';
+import { AccessibilityProvider } from './contexts/AccessibilityContext';
 
 function App() {
   return (
@@ -75,7 +76,9 @@ function App() {
                     <Reports />
                 } />
                 <Route path="/host/settings" element={
+                  <AccessibilityProvider>
                     <Settings />
+                    </AccessibilityProvider>
                 } />
                 <Route path="/guest" element={
                   <GuestPage />
@@ -88,7 +91,7 @@ function App() {
         <Route path="history" element={<PollHistoryPage />} />
         <Route path="poll-questions" element={<PollQuestionsPage roomCode="" />} />
         <Route path="notifications" element={<NotificationPage />} />
-        <Route path="settings" element={<SettingsStudent />} />
+        <Route path="settings" element={<AccessibilityProvider><SettingsStudent /></AccessibilityProvider>} />
         <Route path="leaderboard" element={<StudentLeaderboard />} />
         <Route path="change-password" element={<ChangePassword />} />
         <Route path="active-sessions" element={<ActiveSessions />} />

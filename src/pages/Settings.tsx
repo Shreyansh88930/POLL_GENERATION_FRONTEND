@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import DashboardLayout from '../components/DashboardLayout';
 import GlassCard from '../components/GlassCard';
-import { useTheme } from '../contexts/ThemeContext';
+import { AccessibilityProvider, useAccessibility } from "../contexts/AccessibilityContext";
 
 const fontSizeMap: Record<string, string> = {
   small: '14px',
@@ -23,62 +23,7 @@ const fontSizeMap: Record<string, string> = {
 };
 
 const Settings = () => {
-  const [appearanceSettings, setAppearanceSettings] = useState({
-  reducedMotion: false,
-  highContrast: false,
-});
-
-// Load from localStorage on mount
-useEffect(() => {
-  const stored = localStorage.getItem("appearanceSettings");
-  if (stored) {
-    setAppearanceSettings(JSON.parse(stored));
-  }
-}, []);
-
-// Apply settings whenever they change
-useEffect(() => {
-  localStorage.setItem("appearanceSettings", JSON.stringify(appearanceSettings));
-
-  // Reduced motion
-  if (appearanceSettings.reducedMotion) {
-    document.documentElement.classList.add("reduced-motion");
-  } else {
-    document.documentElement.classList.remove("reduced-motion");
-  }
-
-  // High contrast
-  if (appearanceSettings.highContrast) {
-    document.documentElement.classList.add("high-contrast");
-  } else {
-    document.documentElement.classList.remove("high-contrast");
-  }
-}, [appearanceSettings]);
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Handle avatar upload
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setProfileData((prev) => ({
-          ...prev,
-          avatar: event.target?.result as string,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Show "Changes applied!" message after saving
-  const [showSavedMessage, setShowSavedMessage] = useState(false);
-  const handleSaveSettings = () => {
-    localStorage.setItem('pollAppSettings', JSON.stringify(settings));
-    setShowSavedMessage(true);
-    setTimeout(() => setShowSavedMessage(false), 2000); // Hide after 2 seconds
-  };
+  const { settings: appearanceSettings, updateSetting: updateAppearance } = useAccessibility();
 
   // Profile Settings
   const [profileData, setProfileData] = useState({
@@ -87,27 +32,23 @@ useEffect(() => {
     email: "john.doe@student.edu",
     bio: "Computer Science student passionate about learning",
     avatar: "https://imgs.search.brave.com/x5_5ivfXsbQ-qwitDVJyk-aJx6KxpIIi0BgyHXDu8Jg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1wc2QvM2Qt/aWxsdXN0cmF0aW9u/LWh1bWFuLWF2YXRh/ci1wcm9maWxlXzIz/LTIxNTA2NzExNDIu/anBnP3NlbXQ9YWlz/X2h5YnJpZCZ3PTc0/MA?height=100&width=100",
-  })
+  });
 
-  // Settings state
+  const [showSavedMessage, setShowSavedMessage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Theme and AI Settings
   const [settings, setSettings] = useState({
-    // General Settings
     defaultTimer: 30,
     autoLaunch: false,
     enableNotifications: true,
-
-    // Audio Settings
     selectedMicrophone: 'default',
     microphoneVolume: 75,
     enableAudioFeedback: true,
-
-    // Theme Settings
     primaryColor: '#8B5CF6',
     secondaryColor: '#3B82F6',
     accentColor: '#14B8A6',
     fontSize: 'medium',
-
-    // AI Settings
     aiConfidenceThreshold: 80,
     autoApproveHighConfidence: false,
     enableSmartFiltering: true,
@@ -127,7 +68,26 @@ useEffect(() => {
     { name: 'Orange', primary: '#F59E0B', secondary: '#D97706', accent: '#EF4444' },
   ];
 
+  const handleSettingChange = (
+    key: keyof typeof settings,
+    value: typeof settings[keyof typeof settings]
+  ): void => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+  };
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProfileData((prev) => ({
+          ...prev,
+          avatar: event.target?.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleResetSettings = () => {
     setSettings({
@@ -137,7 +97,6 @@ useEffect(() => {
       selectedMicrophone: 'default',
       microphoneVolume: 75,
       enableAudioFeedback: true,
-      sessionTimeout: 60,
       primaryColor: '#8B5CF6',
       secondaryColor: '#3B82F6',
       accentColor: '#14B8A6',
@@ -146,6 +105,12 @@ useEffect(() => {
       autoApproveHighConfidence: false,
       enableSmartFiltering: true,
     });
+  };
+
+  const handleSaveSettings = () => {
+    localStorage.setItem('pollAppSettings', JSON.stringify(settings));
+    setShowSavedMessage(true);
+    setTimeout(() => setShowSavedMessage(false), 2000);
   };
 
   const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: (value: boolean) => void }) => (
@@ -161,18 +126,27 @@ useEffect(() => {
     </button>
   );
 
-  useEffect(() => {
-    const fontSize = fontSizeMap[settings.fontSize] || fontSizeMap.medium;
-    document.documentElement.style.setProperty('--app-font-size', fontSize);
-    // Optionally, set on body for legacy support:
-    document.body.style.fontSize = fontSize;
-  }, [settings.fontSize]);
+  // Theme Settings
   useEffect(() => {
     document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
     document.documentElement.style.setProperty('--secondary-color', settings.secondaryColor);
     document.documentElement.style.setProperty('--accent-color', settings.accentColor);
   }, [settings.primaryColor, settings.secondaryColor, settings.accentColor]);
 
+  // Font size
+  useEffect(() => {
+    const fontSize = fontSizeMap[settings.fontSize] || fontSizeMap.medium;
+    document.documentElement.style.setProperty('--app-font-size', fontSize);
+    document.body.style.fontSize = fontSize;
+  }, [settings.fontSize]);
+
+  // Apply accessibility settings
+  useEffect(() => {
+    document.documentElement.classList.toggle('reduced-motion', appearanceSettings.reducedMotion);
+    document.documentElement.classList.toggle('high-contrast', appearanceSettings.highContrast);
+  }, [appearanceSettings]);
+
+  // Restore pollAppSettings
   useEffect(() => {
     const saved = localStorage.getItem('pollAppSettings');
     if (saved) {
@@ -180,17 +154,8 @@ useEffect(() => {
     }
   }, []);
 
-  function handleSettingChange(
-    key: keyof typeof settings,
-    value: typeof settings[keyof typeof settings]
-  ): void {
-    setSettings(prev => ({
-      ...prev,
-      [key]: value,
-    }));
-  }
   return (
-
+    <AccessibilityProvider>
     <DashboardLayout>
       {/* Success Message Popup */}
       {showSavedMessage && (
@@ -478,98 +443,97 @@ useEffect(() => {
 
           {/* Theme Settings */}
           <GlassCard className="p-6">
-  <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-    <Palette className="w-5 h-5 mr-2" />
-    Theme Settings
-  </h3>
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+              <Palette className="w-5 h-5 mr-2" />
+              Theme Settings
+            </h3>
 
-  <div className="space-y-6">
-    {/* Color Presets */}
-    <div>
-      <label className="block text-sm font-medium text-gray-300 mb-3">
-        Color Presets
-      </label>
-      <div className="grid grid-cols-2 gap-3">
-        {colorPresets.map((preset, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              handleSettingChange('primaryColor', preset.primary);
-              handleSettingChange('secondaryColor', preset.secondary);
-              handleSettingChange('accentColor', preset.accent);
-            }}
-            className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200"
-          >
-            <div className="flex space-x-1">
-              <div
-                className="w-4 h-4 rounded-full"
-                style={{ backgroundColor: preset.primary }}
-              />
-              <div
-                className="w-4 h-4 rounded-full"
-                style={{ backgroundColor: preset.secondary }}
-              />
-              <div
-                className="w-4 h-4 rounded-full"
-                style={{ backgroundColor: preset.accent }}
-              />
-            </div>
-            <span className="text-white text-sm">{preset.name}</span>
-          </button>
-        ))}
+            <div className="space-y-6">
+              {/* Color Presets */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-3">
+                  Color Presets
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {colorPresets.map((preset, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        handleSettingChange('primaryColor', preset.primary);
+                        handleSettingChange('secondaryColor', preset.secondary);
+                        handleSettingChange('accentColor', preset.accent);
+                      }}
+                      className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200"
+                    >
+                      <div className="flex space-x-1">
+                        <div
+                          className="w-4 h-4 rounded-full"
+                          style={{ backgroundColor: preset.primary }}
+                        />
+                        <div
+                          className="w-4 h-4 rounded-full"
+                          style={{ backgroundColor: preset.secondary }}
+                        />
+                        <div
+                          className="w-4 h-4 rounded-full"
+                          style={{ backgroundColor: preset.accent }}
+                        />
+                      </div>
+                      <span className="text-white text-sm">{preset.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Font Size */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Font Size
+                </label>
+                <select
+                  value={settings.fontSize}
+                  onChange={(e) => handleSettingChange('fontSize', e.target.value)}
+                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  <option value="small" className="bg-gray-800">Small</option>
+                  <option value="medium" className="bg-gray-800">Medium</option>
+                  <option value="large" className="bg-gray-800">Large</option>
+                </select>
+              </div>
+
+              {/* Accessibility Options */}
+<div className="space-y-4">
+  {[
+    { key: "reducedMotion", label: "Reduced Motion", desc: "Minimize animations and transitions" },
+    { key: "highContrast", label: "High Contrast", desc: "Increase contrast for better visibility" },
+  ].map((setting) => (
+    <div key={setting.key} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+      <div>
+        <h4 className="text-white font-medium">{setting.label}</h4>
+        <p className="text-gray-400 text-sm">{setting.desc}</p>
       </div>
-    </div>
-
-    {/* Font Size */}
-    <div>
-      <label className="block text-sm font-medium text-gray-300 mb-2">
-        Font Size
+      <label className="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          checked={appearanceSettings[setting.key as keyof typeof appearanceSettings]}
+          onChange={(e) =>
+            updateAppearance(setting.key as keyof typeof appearanceSettings, e.target.checked)
+          }
+          className="sr-only peer"
+        />
+        <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
       </label>
-      <select
-        value={settings.fontSize}
-        onChange={(e) => handleSettingChange('fontSize', e.target.value)}
-        className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-      >
-        <option value="small" className="bg-gray-800">Small</option>
-        <option value="medium" className="bg-gray-800">Medium</option>
-        <option value="large" className="bg-gray-800">Large</option>
-      </select>
     </div>
+  ))}
+</div>
 
-    {/* Accessibility Options */}
-    <div className="space-y-4">
-      {[
-        { key: "reducedMotion", label: "Reduced Motion", desc: "Minimize animations and transitions" },
-        { key: "highContrast", label: "High Contrast", desc: "Increase contrast for better visibility" },
-      ].map((setting) => (
-        <div key={setting.key} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-          <div>
-            <h4 className="text-white font-medium">{setting.label}</h4>
-            <p className="text-gray-400 text-sm">{setting.desc}</p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={appearanceSettings[setting.key as keyof typeof appearanceSettings]}
-              onChange={(e) =>
-                setAppearanceSettings({
-                  ...appearanceSettings,
-                  [setting.key]: e.target.checked,
-                })
-              }
-              className="sr-only peer"
-            />
-            <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-          </label>
-        </div>
-      ))}
-    </div>
-  </div>
-</GlassCard>
+            </div>
+          </GlassCard>
 
         </div>
       </motion.div>
     </DashboardLayout>
+    </AccessibilityProvider>
   );
 };
 
