@@ -1,9 +1,10 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Bell, Check, X, Search, Trophy, Users, Settings, Clock, Star, Zap, Filter } from "lucide-react"
 import GlassCard from "../GlassCard"
+import { useNotificationContext } from "../../contexts/NotificationContext"
 
 interface Notification {
   id: string
@@ -22,6 +23,7 @@ interface Notification {
 }
 
 const NotificationPage: React.FC = () => {
+  const { setUnreadCount } = useNotificationContext()
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: "1",
@@ -88,6 +90,12 @@ const NotificationPage: React.FC = () => {
     "all",
   )
   const [searchTerm, setSearchTerm] = useState("")
+
+  // Update the context with the current unread count whenever notifications change
+  useEffect(() => {
+    const unreadCount = notifications.filter(n => !n.isRead).length
+    setUnreadCount(unreadCount)
+  }, [notifications, setUnreadCount])
 
   const getNotificationIcon = (type: string, priority: string) => {
     const iconClass = `w-5 h-5 ${priority === "high" ? "text-yellow-400" : priority === "medium" ? "text-blue-400" : "text-gray-400"}`
@@ -197,10 +205,10 @@ const NotificationPage: React.FC = () => {
 
             {/* Filter Buttons */}
             <div className="flex flex-wrap gap-2">
-              {["all", "unread", "achievement", "poll"].map((filterType) => (
+              {(["all", "unread", "achievement", "poll"] as const).map((filterType) => (
                 <button
                   key={filterType}
-                  onClick={() => setFilter(filterType as any)}
+                  onClick={() => setFilter(filterType)}
                   className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ${
                     filter === filterType ? "bg-purple-600 text-white" : "bg-white/10 text-gray-300 hover:bg-white/20"
                   }`}

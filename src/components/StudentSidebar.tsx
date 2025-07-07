@@ -13,6 +13,7 @@ import {
   Menu,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { useNotificationContext } from "../contexts/NotificationContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -24,6 +25,7 @@ interface StudentSidebarProps {
 
 const StudentSidebar: React.FC<StudentSidebarProps> = ({ isOpen, onClose }) => {
   const { logout } = useAuth();
+  const { unreadCount } = useNotificationContext();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -128,7 +130,7 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ isOpen, onClose }) => {
                   />
                   <span className="font-medium tracking-wide">{item.label}</span>
                 </span>
-                {item.id === "notifications" && (
+                {item.id === "notifications" && unreadCount > 0 && (
                   <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse ml-2" />
                 )}
               </button>
