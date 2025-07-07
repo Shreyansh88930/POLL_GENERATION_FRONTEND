@@ -529,13 +529,17 @@ const Reports = () => {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{
-                    backgroundColor: "rgba(17, 24, 39, 0.8)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    borderRadius: "8px",
-                    color: "#fff",
-                  }}
-                />
+              cursor={{ fill: "rgba(255,255,255,0.05)" }}
+              formatter={(value: number, name: string) => [`${value}%`, name]}
+              contentStyle={{
+                backgroundColor: "#1f2937", // Tailwind gray-800
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                borderRadius: "8px",
+                color: "#fff",
+              }}
+              itemStyle={{ color: "#fff" }}
+              labelStyle={{ color: "#a1a1aa" }} // gray-400
+            />
               </RechartsPieChart>
             </ResponsiveContainer>
           </div>
